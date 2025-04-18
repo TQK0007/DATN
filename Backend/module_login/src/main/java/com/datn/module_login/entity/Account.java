@@ -17,7 +17,7 @@ public class Account {
     private String PhoneNumber;
     private String Password;
     private String RoleName;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "UserId", nullable = false)
     private User User;
 }

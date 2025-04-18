@@ -22,16 +22,16 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/account")
 public class AccountController {
-    private IAccountService _accountService;
-    private IUserService _userService;
+    private IAccountService accountService;
+    private IUserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AccountDetails accountDetails)
     {
         User user = UserMapper.MapAccountDetailsToUser(accountDetails);
         Account account = AccountMapper.MapAccountDetailsToAccount(accountDetails);
-        User registerUser = _userService.save(user);
-        Account registerAccount = _accountService.register(account,registerUser);
+        User registerUser = userService.save(user);
+        Account registerAccount = accountService.register(account,registerUser);
         if(registerAccount.getId() > 0 && registerUser.getId() > 0) return ResponseEntity.ok("Đăng ký thành công");
         return ResponseEntity.badRequest().body("Đăng ký thất bại");
     }
@@ -39,15 +39,15 @@ public class AccountController {
     @GetMapping("/getByPage")
     public Iterable<AccountResponseDTO> getAllByPage(@RequestParam(value = "page", defaultValue = "1") int page)
     {
-        return _accountService.findAllByPage(page);
+        return accountService.findAllByPage(page);
     }
 
     @PostMapping("/create")
     public ResponseEntity<String> createNewAccount(@RequestBody AccountCreateDTO accountCreateDTO)
     {
-        User userRegister = _userService.findById(accountCreateDTO.userId());
+        User userRegister = userService.findById(accountCreateDTO.userId());
         Account account = AccountMapper.MapAccountCreateDTOToAccount(accountCreateDTO,userRegister);
-        Account accountCreate = _accountService.save(account);
+        Account accountCreate = accountService.save(account);
         if(accountCreate.getId() > 0) return ResponseEntity.ok("Tạo thành công");
         return ResponseEntity.badRequest().body("Tạo thất bại");
     }
@@ -56,9 +56,9 @@ public class AccountController {
     public ResponseEntity<String> updateAccount(@RequestBody AccountUpdateDTO accountUpdateDTO,
                                                 @PathVariable(value = "id") int id)
     {
-        Account account = _accountService.findById(id);
+        Account account = accountService.findById(id);
         Account accountUpdate = AccountMapper.MapAccountUpdateDTOToAccount(accountUpdateDTO,account);
-        Account accountUpdated = _accountService.update(accountUpdate);
+        Account accountUpdated = accountService.update(accountUpdate);
         if(accountUpdated.getId() > 0) return ResponseEntity.ok("Cập nhật thành công");
         return ResponseEntity.badRequest().body("Cập nhật thất bại");
     }
@@ -66,8 +66,8 @@ public class AccountController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteAccount(@PathVariable(value = "id") int id)
     {
-        Account accountDelete = _accountService.findById(id);
-        _accountService.delete(accountDelete);
+        Account accountDelete = accountService.findById(id);
+        accountService.delete(accountDelete);
         return ResponseEntity.ok("Xoá thành công");
     }
 }

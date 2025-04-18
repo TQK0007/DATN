@@ -1,4 +1,4 @@
 package com.datn.module_login.dto.UserDTO;
 
-public record UserResponseDTO() {
+public record UserResponseDTO(int id, String firstName, String lastName, boolean sex) {
 }

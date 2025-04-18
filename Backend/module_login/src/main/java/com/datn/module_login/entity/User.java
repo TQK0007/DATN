@@ -11,20 +11,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "User")
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int Id;
-
-    @Column(name = "FirstName")
-    private String firstName;
-
-    @Column(name = "LastName")
-    private String lastName;
-
-    @Column(name = "Sex")
-    private boolean sex;
-    @OneToOne(mappedBy = "User")
-    private Account account;
+    private String FirstName;
+    private String LastName;
+    private boolean Sex;
+    @OneToOne(mappedBy = "User", cascade = CascadeType.ALL)
+    private Account Account;
 }
