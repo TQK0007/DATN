@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class AccountMapper {
 
-    public static Account MapAccountDetailsToAccount(AccountDetails accountDetails)
+    public static Account MapAccountDetailsToAccount(AccountDetails accountDetails, String hashPassword)
     {
         Account account = new Account();
         account.setEmail(accountDetails.email());
-        account.setPassword(accountDetails.password());
+        account.setPassword(hashPassword);
         account.setPhoneNumber(accountDetails.phoneNumber());
         return account;
     }
@@ -32,25 +32,31 @@ public class AccountMapper {
         return accountResponseDTO;
     }
 
-    public static Account MapAccountCreateDTOToAccount(AccountCreateDTO accountCreateDTO, User userRegister)
+    public static Account MapAccountCreateDTOToAccount(AccountCreateDTO accountCreateDTO, User userRegister, String hashPassword)
     {
         Account account = new Account();
         account.setEmail(accountCreateDTO.email());
         account.setPhoneNumber(accountCreateDTO.phoneNumber());
         account.setRoleName(accountCreateDTO.roleName());
-        account.setPassword(accountCreateDTO.password());
+        account.setPassword(hashPassword);
         account.setRoleName(accountCreateDTO.roleName());
         account.setUser(userRegister);
         return account;
     }
 
-    public static Account MapAccountUpdateDTOToAccount(AccountUpdateDTO accountUpdateDTO, Account accountUpdate)
+    public static Account MapAccountUpdateDTOToAccount(AccountUpdateDTO accountUpdateDTO, Account accountUpdate,  String hashPassword)
     {
         accountUpdate.setEmail(accountUpdateDTO.email());
         accountUpdate.setPhoneNumber(accountUpdateDTO.phoneNumber());
         accountUpdate.setRoleName(accountUpdateDTO.roleName());
-        accountUpdate.setPassword(accountUpdateDTO.password());
+        accountUpdate.setPassword(hashPassword);
         return accountUpdate;
+    }
+
+    public static Account MapUpdatePasswordDTOToAccount(Account accountUpdate,  String hashPassword)
+    {
+        accountUpdate.setPassword(hashPassword);
+        return  accountUpdate;
     }
 
 }

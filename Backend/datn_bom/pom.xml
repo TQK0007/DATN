@@ -36,7 +36,9 @@
 		<spring-data-jpa.version>3.4.4</spring-data-jpa.version>
 		<spring-devtools.version>3.4.4</spring-devtools.version>
 		<spring-actuator.version>3.4.4</spring-actuator.version>
+		<spring-security.version>6.4.4</spring-security.version>
 		<lombok.version>1.18.36</lombok.version>
+		<jsonwebtoken.version>0.12.5</jsonwebtoken.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,6 +72,27 @@
 				<groupId>org.springdoc</groupId>
 				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 				<version>${spring-doc.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-api</artifactId>
+				<version>${jsonwebtoken.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-impl</artifactId>
+				<version>${jsonwebtoken.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt-jackson</artifactId>
+				<version>${jsonwebtoken.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
