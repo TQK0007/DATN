@@ -7,6 +7,8 @@
         <option value="$PROJECT_DIR$/module_login/pom.xml" />
         <option value="$PROJECT_DIR$/../datn_bom/pom.xml" />
         <option value="$PROJECT_DIR$/datn_bom/pom.xml" />
+        <option value="$PROJECT_DIR$/../module_management_product/pom.xml" />
+        <option value="$PROJECT_DIR$/module_management_product/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,7 +1,0 @@
-package com.datn.module_login.service;
-
-import com.datn.module_login.entity.Account;
-
-public interface IAccountService extends IBaseService<Account>{
-
-}

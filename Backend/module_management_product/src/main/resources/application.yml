@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: module_management_product
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/DATN_USER_MANAGEMENT
+    username: Khanh3182
+    password: Khanh@123
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: none
+        format_sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+server:
+  port: 8081
+pagesize: 10

@@ -8,12 +8,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="module_login" />
+        <module name="module_management_product" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="datn-bom" target="19" />
       <module name="datn_bom" target="19" />
       <module name="module_login" target="19" />
+      <module name="module_login (1)" target="19" />
+      <module name="module_management_product" target="19" />
+      <module name="module_management_product (1)" target="19" />
+      <module name="module_management_product (2)" target="19" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -21,6 +26,9 @@
       <module name="datn-bom" options="-parameters" />
       <module name="datn_bom" options="" />
       <module name="module_login" options="" />
+      <module name="module_management_product" options="" />
+      <module name="module_management_product (1)" options="-parameters" />
+      <module name="module_management_product (2)" options="-parameters" />
     </option>
   </component>
 </project>

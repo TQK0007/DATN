@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Backend.iml" filepath="$PROJECT_DIR$/.idea/Backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/../datn_bom/datn_bom.iml" filepath="$PROJECT_DIR$/../datn_bom/datn_bom.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_login/module_login.iml" filepath="$PROJECT_DIR$/module_login/module_login.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_management_product/module_management_product.iml" filepath="$PROJECT_DIR$/module_management_product/module_management_product.iml" />
     </modules>
   </component>
 </project>
