@@ -3,7 +3,7 @@ spring:
     name: module_management_product
 
   datasource:
-    url: jdbc:mysql://localhost:3306/DATN_USER_MANAGEMENT
+    url: jdbc:mysql://localhost:3306/DATN_PRODUCT_MANAGEMENT
     username: Khanh3182
     password: Khanh@123
 
