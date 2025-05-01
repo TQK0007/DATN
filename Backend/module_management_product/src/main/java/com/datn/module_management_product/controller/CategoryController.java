@@ -35,7 +35,7 @@ public class CategoryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@RequestBody CategoryUpdateDTO categoryUpdateDTO,
+    public ResponseEntity<String> updateCategory(@RequestBody CategoryUpdateDTO categoryUpdateDTO,
                                              @PathVariable(name = "id") int id)
     {
         Category category = categoryService.findById(id);
@@ -46,7 +46,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "id") int id)
+    public ResponseEntity<String> deleteCategory(@PathVariable(name = "id") int id)
     {
         Category deleteCategory = categoryService.findById(id);
         categoryService.delete(deleteCategory);

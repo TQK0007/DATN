@@ -1,16 +1,11 @@
 package com.datn.module_management_product.controller;
 
-import com.datn.module_management_product.dto.CategoryDTO.CategoryCreateDTO;
-import com.datn.module_management_product.dto.CategoryDTO.CategoryResponseDTO;
-import com.datn.module_management_product.dto.CategoryDTO.CategoryUpdateDTO;
-import com.datn.module_management_product.dto.ProductAttributeDTO.ProductAttributeCreateUpdateDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductCreateUpdateDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductResponseDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductResponseDetailDTO;
 import com.datn.module_management_product.entity.Category;
 import com.datn.module_management_product.entity.Product;
 import com.datn.module_management_product.entity.ProductAttribute;
-import com.datn.module_management_product.mapper.CategoryMapper;
 import com.datn.module_management_product.mapper.ProductAttributeMapper;
 import com.datn.module_management_product.mapper.ProductMapper;
 import com.datn.module_management_product.service.ICategoryService;
@@ -54,7 +49,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO,
+    public ResponseEntity<String> updateCategory(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO,
                                              @PathVariable(name = "id") int id)
     {
         Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
@@ -66,7 +61,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "id") int id)
+    public ResponseEntity<String> deleteCategory(@PathVariable(name = "id") int id)
     {
         Product deleteProduct = productService.findById(id);
         productService.delete(deleteProduct);

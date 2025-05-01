@@ -24,4 +24,4 @@ logging:
 
 server:
   port: 8081
-pagesize: 10
+pagesize: 5
