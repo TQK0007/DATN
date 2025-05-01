@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Data
 @MappedSuperclass
 public class BaseEntity {
-    private LocalDateTime createAt;
-    private String createBy;
-    private LocalDateTime updateAt;
-    private String updateBy;
+    private LocalDateTime createAt = LocalDateTime.now();
+    private String createBy = "Admin";
+    private LocalDateTime updateAt = LocalDateTime.now();
+    private String updateBy = "Admin";
 }

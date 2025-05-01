@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,5 +56,10 @@ public class CategoryServiceImpl implements ICategoryService {
         List<CategoryResponseDTO> categoryResponseDTOS = categories.stream().map(category -> CategoryMapper.MapCategoryToCategoryResponseDTO(category))
                                                             .collect(Collectors.toList());
         return categoryResponseDTOS;
+    }
+
+    @Override
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name).get();
     }
 }

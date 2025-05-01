@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderItem {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int quality;
     private String image;
