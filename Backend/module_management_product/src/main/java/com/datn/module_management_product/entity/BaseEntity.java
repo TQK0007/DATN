@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Data
 @MappedSuperclass
 public class BaseEntity {
-    private LocalDateTime createdDate;
-    private String createdBy;
-    private LocalDateTime updatedAt;
-    private String updatedBy;
+    private LocalDateTime createAt;
+    private String createBy;
+    private LocalDateTime updateAt;
+    private String updateBy;
 }
