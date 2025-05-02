@@ -76,4 +76,12 @@ public class ProductController {
         return  productResponseDetailDTO;
     }
 
+    @GetMapping("/getProductByName")
+    public List<ProductResponseDetailDTO> findByName(@RequestParam(name = "name") String name,
+                                                     @RequestParam(name = "page", defaultValue = "1") int page)
+    {
+        List<ProductResponseDetailDTO> productResponseDetailDTOS = productService.findByName(name,page);
+        if(productResponseDetailDTOS.isEmpty()) return List.of();
+        return productResponseDetailDTOS;
+    }
 }
