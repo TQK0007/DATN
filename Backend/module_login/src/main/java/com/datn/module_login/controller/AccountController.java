@@ -103,6 +103,9 @@ public class AccountController {
         String jwt = "";
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginDTO.emailPhoneNumber(),loginDTO.password());
         Authentication authenticationResponse = authenticationManager.authenticate(authentication);
+
+        int userId = accountService.findUserIdByUserName(loginDTO.emailPhoneNumber());
+
         if(null!=authenticationResponse && authenticationResponse.isAuthenticated())
         {
             if(null!=env)
@@ -111,6 +114,7 @@ public class AccountController {
                         ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 jwt = Jwts.builder().issuer("Khanh").subject("JWT Token")
+                        .claim("userId",userId)
                         .claim("username", authenticationResponse.getName())
                         .claim("authorities", authenticationResponse.getAuthorities().stream().map(
                                 GrantedAuthority::getAuthority).collect(Collectors.joining(",")))

@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value = "Select u from User u")
     Page<User> findAllByPage(Pageable pageable);
+
+
 }
