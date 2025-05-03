@@ -41,14 +41,12 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 }
-
             } catch (Exception exception) {
                 throw new BadCredentialsException("Invalid Token received!");
             }
         }
         filterChain.doFilter(request,response);
     }
-
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return false;

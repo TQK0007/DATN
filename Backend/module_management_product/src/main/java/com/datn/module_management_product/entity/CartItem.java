@@ -20,6 +20,7 @@ public class CartItem {
     private String image;
     private String size;
     private String color;
+    private double price;
 
     @ManyToOne
     @JoinColumn(name = "cartId", nullable = false)

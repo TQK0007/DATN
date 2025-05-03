@@ -19,6 +19,7 @@ public class OrderItem {
     private String image;
     private String size;
     private String color;
+    private double price;
 
     @ManyToOne
     @JoinColumn(name = "productId", nullable = false)

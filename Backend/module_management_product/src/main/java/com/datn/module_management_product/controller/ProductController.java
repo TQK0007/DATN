@@ -33,7 +33,7 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createNewCategory(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO)
+    public ResponseEntity<String> createNewProduct(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO)
     {
         Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
         Product newProduct = ProductMapper.MapProductCreateUpdateDTOToProduct(productCreateUpdateDTO,category);
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateCategory(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO,
+    public ResponseEntity<String> updateProduct(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO,
                                              @PathVariable(name = "id") int id)
     {
         Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
@@ -61,7 +61,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable(name = "id") int id)
+    public ResponseEntity<String> deleteProduct(@PathVariable(name = "id") int id)
     {
         Product deleteProduct = productService.findById(id);
         productService.delete(deleteProduct);
