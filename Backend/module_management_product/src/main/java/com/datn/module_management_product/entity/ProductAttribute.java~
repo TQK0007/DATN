@@ -1,0 +1,11 @@
+package com.datn.module_management_product.entity;
+
+
+public class ProductAttribute {
+    private Integer id;
+    private String image;
+    private String size;
+    private String color;
+    private Integer quality;
+    private Integer productId;
+}

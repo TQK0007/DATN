@@ -1,0 +1,9 @@
+package com.datn.module_management_product.dto.MaterialDTO;
+
+public class MaterialCreateUpdateDTO {
+    private String name;
+    private double price;
+    private String color;
+    private String image;
+    private String description;
+}

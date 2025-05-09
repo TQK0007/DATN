@@ -1,0 +1,23 @@
+package com.datn.module_management_product.entity;
+
+public class UserOrder {
+    private Integer id;
+    private Double bust;
+    private Double waist;
+    private Double armpit;
+    private Double shoulderWidth;
+    private Double bicep;
+    private Double armLength;
+    private Double shirtLength;
+    private Double wrist;
+    private Double hip;
+    private Double pantsLength;
+    private Double thigh;
+    private Double knee;
+    private Double calf;
+    private Integer quality;
+    private String image;
+    private Integer userId;
+    private Integer productId;
+    private Integer materialId;
+}
