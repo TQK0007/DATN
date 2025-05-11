@@ -122,7 +122,7 @@ export default function ContainerPanel() {
                       <div className="item-list">
                         <div className="avatar">
                           <img
-                            src="/src/assets/img/jm_denis.jpg"
+                            src="/assets/img/jm_denis.jpg"
                             alt="..."
                             className="avatar-img rounded-circle"
                           />
@@ -158,7 +158,7 @@ export default function ContainerPanel() {
                       <div className="item-list">
                         <div className="avatar">
                           <img
-                            src="/src/assets/img/talha.jpg"
+                            src="/assets/img/talha.jpg"
                             alt="..."
                             className="avatar-img rounded-circle"
                           />
@@ -177,7 +177,7 @@ export default function ContainerPanel() {
                       <div className="item-list">
                         <div className="avatar">
                           <img
-                            src="/src/assets/img/chadengle.jpg"
+                            src="/assets/img/chadengle.jpg"
                             alt="..."
                             className="avatar-img rounded-circle"
                           />

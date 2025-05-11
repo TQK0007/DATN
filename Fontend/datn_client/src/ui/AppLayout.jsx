@@ -1,13 +1,13 @@
 import Header from "./Header";
 import Cart from "./Cart"
-import Slider from "./Slider";
-import Banner from "./Banner";
-import Product from "./Product";
 import Footer from "./Footer";
 import BackToTop from "./BackToTop";
 import Modal from "./Modal";
 
 import { useEffect } from "react";
+import Container from "./Container";
+import Home from "../pages/Home";
+import { Outlet, useLocation } from "react-router-dom";
 
 
 const loadScript = (src) => {
@@ -23,7 +23,12 @@ const loadScript = (src) => {
 
 export default function AppLayout() {
 
+  const location = useLocation();
+
   useEffect(() => {
+
+    
+
     const loadScripts = async () => {
       try {
         // Load script lần lượt theo thứ tự
@@ -100,9 +105,7 @@ export default function AppLayout() {
         });
 
 
-
-        
-
+    
 
         // Các đoạn jQuery init khác cũng đặt ở đây...
 
@@ -112,15 +115,23 @@ export default function AppLayout() {
     };
 
     loadScripts();
-  }, []);
+    // Mỗi khi URL thay đổi
+    const animsitionEl = document.querySelector(".animsition-loading-1");
+    if (animsitionEl) {
+      animsitionEl.remove(); // Xoá khỏi DOM
+      console.log("Đã xoá animsition-loading-1");
+    }
+  }, [location.pathname]);
+
+ 
 
   return (
     <div>
       <Header/>
       <Cart/>
-      <Slider/>
-      <Banner/>
-      <Product/>
+      <Container>
+        <Outlet/>
+      </Container>
       <Footer/>
       <BackToTop/>
       <Modal/>
