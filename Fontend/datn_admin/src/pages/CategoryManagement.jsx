@@ -31,7 +31,7 @@ const CategoryManagement = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const data = await categoryApi.getCategories(currentPage);
+      const data = await categoryApi.getCategoryBypage(currentPage);
       setCategories(data);
     } catch (error) {
       console.error("Không thể tải dữ liệu danh mục:", error);

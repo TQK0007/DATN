@@ -61,4 +61,10 @@ public class CategoryController {
         Map<String, Integer> result = Map.of("count", count, "page", page);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/getAll")
+    public List<CategoryResponseDTO> getAll()
+    {
+        return categoryService.findAllDTO();
+    }
 }

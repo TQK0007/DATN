@@ -17,6 +17,6 @@ public class ProductCreateUpdateDTO {
     private int discount;
     private String name;
     private String description;
-    private String categoryName;
+    private int categoryId;
     private List<ProductAttributeCreateUpdateDTO> productAttributes;
 }

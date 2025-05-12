@@ -5,12 +5,20 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.crypto.SecretKey;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 public interface IBaseService<T> {
+
+    String ROOT_PATH = (System.getProperty("user.dir") + File.separator + "uploaded_images").replace("\\", "\\\\");
 
     List<T> findAll();
 
@@ -19,6 +27,8 @@ public interface IBaseService<T> {
     void delete(T t);
     T findById(int id);
 
+    int getTotalPages();
+
     default int getUserIdFromToken(String jwtToken) {
         SecretKey secretKey = Keys.hmacShaKeyFor(ApplicationConstants.JWT_SECRET_DEFAULT_VALUE.getBytes(StandardCharsets.UTF_8));
         Claims claims = Jwts.parser().verifyWith(secretKey)
@@ -26,5 +36,31 @@ public interface IBaseService<T> {
         return (int) claims.get("userId");
     }
 
-    int getTotalPages();
+    default String uploadImg(MultipartFile file) throws IOException {
+        String rootURL = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+        // Kiểm tra file rỗng
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Please select a file to upload.");
+        }
+
+        // Kiểm tra phần mở rộng
+        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (fileExtension == null || !fileExtension.matches("(?i)jpg|jpeg|png")) {
+            throw new IllegalArgumentException("Only JPG, JPEG, and PNG files are allowed.");
+        }
+
+        // Tạo tên file ngẫu nhiên
+        String fileName = UUID.randomUUID().toString() + "." + fileExtension;
+        String filePath = ROOT_PATH  + File.separator + fileName;
+
+        System.out.println(filePath);
+
+        // Lưu file
+        file.transferTo(new File(filePath));
+
+        // Trả về URL ảnh
+        return rootURL + "/Img/" + fileName;
+    }
+
 }

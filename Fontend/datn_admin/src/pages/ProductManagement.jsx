@@ -16,18 +16,22 @@ const ProductManagement = () => {
     price: 0,
     discount: 0,
     description: "",
-    categoryName: "",
+    categoryId: 1,
     productAttributes: [{ image: "", size: "", color: "", quality: 0 }],
   })
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(3) // Giả định có 3 trang
-  const itemsPerPage = 10
+  const [totalProductAndPage, setTotalProductAndPage] = useState({
+    count: 1,
+    page: 1,
+  }); // Giả định có 1 trang
+  const [triggerReload, setTriggerReload] = useState(false);
+  const itemsPerPage = 5
   const fileInputRefs = useRef([])
 
   useEffect(() => {
     fetchProducts()
     fetchCategories()
-  }, [])
+  }, [triggerReload])
 
   const fetchProducts = async () => {
     try {
@@ -57,7 +61,7 @@ const ProductManagement = () => {
       price: 0,
       discount: 0,
       description: "",
-      categoryName: "",
+      categoryId: 1,
       productAttributes: [{ image: "", size: "", color: "", quality: 0 }],
     })
     setShowModal(true)
@@ -72,7 +76,7 @@ const ProductManagement = () => {
         price: productDetail.price,
         discount: productDetail.discount,
         description: productDetail.description,
-        categoryName: productDetail.categoryName,
+        categoryId: productDetail.categoryId,
         productAttributes: productDetail.productAttributes || [{ image: "", size: "", color: "", quality: 0 }],
       })
       setShowModal(true)
@@ -165,8 +169,10 @@ const ProductManagement = () => {
   // Tính toán phân trang
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem)
-  const totalItems = products.length
+  //const currentItems = products.slice(indexOfFirstItem, indexOfLastItem)
+  const totalItems = totalProductAndPage.count
+  const totalPages = totalProductAndPage.page
+  
 
   return (
     <Card>
@@ -194,7 +200,7 @@ const ProductManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((product) => (
+                {products.map((product) => (
                   <tr key={product.id}>
                     <td>{product.id}</td>
                     <td>{product.name}</td>
@@ -262,11 +268,11 @@ const ProductManagement = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Danh mục</Form.Label>
-                  <Form.Select name="categoryName" value={formData.categoryName} onChange={handleInputChange} required>
+                  <Form.Select name="categoryId" value={formData.categoryId} onChange={handleInputChange} required>
                     <option value="">Chọn danh mục</option>
                     {categories.map((category) => (
-                      <option key={category.id} value={category.name}>
-                        {category.name}
+                      <option key={category.id} value={category.id}>
+                        {category.name} ({category.type})
                       </option>
                     ))}
                   </Form.Select>

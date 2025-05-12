@@ -8,6 +8,10 @@ import com.datn.module_management_product.service.IMaterialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/material")
@@ -47,5 +51,18 @@ public class MaterialController {
         Material deleteMaterial = materialService.findById(id);
         materialService.delete(deleteMaterial);
         return ResponseEntity.ok("Xoá thành công");
+    }
+
+    @GetMapping("/getTotalMaterialAndPage")
+    public ResponseEntity<Map<String, Integer>> getTotalCategoryAndPage() {
+        int count = materialService.findAll().size();
+        int page = materialService.getTotalPages();
+        Map<String, Integer> result = Map.of("count", count, "page", page);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/uploadImg")
+    public ResponseEntity<String> uploadImg(@RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(materialService.uploadImg(file));
     }
 }

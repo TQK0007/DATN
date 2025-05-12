@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request)->request
-                        .requestMatchers("/api/product/getProductByName","/api/product/getByPage").permitAll()
+                        .requestMatchers("/api/product/getProductByName","/api/product/getByPage","/Img/**").permitAll()
                         .requestMatchers("/api/**").hasRole("Admin")
 
                 );

@@ -63,6 +63,11 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
+    public List<CategoryResponseDTO> findAllDTO() {
+        return categoryRepository.findAll().stream().map(category -> CategoryMapper.MapCategoryToCategoryResponseDTO(category)).collect(Collectors.toList());
+    }
+
+    @Override
     public Category findByName(String name) {
         return categoryRepository.findByName(name).get();
     }

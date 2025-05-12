@@ -19,7 +19,8 @@ public class ProductMapper {
                 product.getDiscount(),
                 product.getName(),
                 product.getDescription(),
-                product.getCategory().getName()
+                product.getCategory().getName(),
+                product.getCategory().getId()
         );
         return p;
     }
@@ -35,7 +36,8 @@ public class ProductMapper {
                 product.getName(),
                 product.getDescription(),
                 productAttributes,
-                product.getCategory().getName()
+                product.getCategory().getName(),
+                product.getCategory().getId()
         );
         return p;
     }

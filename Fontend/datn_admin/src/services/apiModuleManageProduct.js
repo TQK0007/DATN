@@ -38,7 +38,14 @@ async function fetchData(endpoint, options = {}) {
 
 // Category API
 export const categoryApi = {
-  getCategories: (page) => fetchData(`/category/getByPage?page=${page}`,{
+
+  getCategories: () => fetchData(`/category/getAll`,{
+      method: "GET",
+      headers: {
+        "Authorization": token,
+      },
+  }),
+  getCategoryBypage: (page) => fetchData(`/category/getByPage?page=${page}`,{
       method: "GET",
       headers: {
         "Authorization": token,
@@ -78,32 +85,52 @@ export const categoryApi = {
 
 // Product API
 export const productApi = {
-  getProducts: () => fetchData("/product/getByPage",{
+  getProducts: (page) => fetchData(`/product/getByPage?page=${page}`,{
       method: "GET",
       headers: {
         "Authorization": token,
       },
   }),
-  getProduct: (id) => fetchData(`/products/${id}`),
+  getProduct: (id) => fetchData(`/product/detail/${id}`,{
+      method: "GET",
+      headers: {
+        "Authorization": token,
+      },
+  }),
   createProduct: (data) =>
-    fetchData("/products", {
+    fetchData("/product/create", {
       method: "POST",
       body: JSON.stringify(data),
+      headers: {
+        "Authorization": token,
+      },
     }),
   updateProduct: (id, data) =>
-    fetchData(`/products/${id}`, {
+    fetchData(`/product/update/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
+      headers: {
+        "Authorization": token,
+      },
     }),
   deleteProduct: (id) =>
-    fetchData(`/products/${id}`, {
+    fetchData(`/product/delete/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": token,
+      },
     }),
 };
 
 // Material API
 export const materialApi = {
-  getMaterials: () => fetchData("/material/getByPage",{
+  getMaterials: (page) => fetchData(`/material/getByPage?page=${page}`,{
+      method: "GET",
+      headers: {
+        "Authorization": token,
+      },
+  }),
+   getTotalMaterialAndPage: () => fetchData(`/material/getTotalMaterialAndPage`,{
       method: "GET",
       headers: {
         "Authorization": token,
@@ -111,19 +138,29 @@ export const materialApi = {
   }),
   getMaterial: (id) => fetchData(`/materials/${id}`),
   createMaterial: (data) =>
-    fetchData("/materials", {
+    fetchData("/material/create", {
       method: "POST",
       body: JSON.stringify(data),
+      headers: {
+        "Authorization": token,
+      },
     }),
   updateMaterial: (id, data) =>
-    fetchData(`/materials/${id}`, {
+    fetchData(`/material/update/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
+      headers: {
+        "Authorization": token,
+      },
     }),
   deleteMaterial: (id) =>
-    fetchData(`/materials/${id}`, {
+    fetchData(`/material/delete/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": token,
+      },
     }),
+  
 };
 
 // Order API
@@ -151,13 +188,52 @@ export const orderApi = {
     }),
 };
 
-// Upload image
-export const uploadImage = async (file) => {
-  // This is a mock function - in a real app, you would upload to a server
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Simulate a URL returned from server
-      resolve(`https://example.com/images/${file.name}`);
-    }, 500);
-  });
+export const uploadImageMaterial = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file); // "file" là tên tham số đúng theo API backend
+
+  try {
+    const response = await fetch("http://localhost:8081/api/material/uploadImg", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Authorization": token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Upload ảnh thất bại");
+    }
+
+    const imageUrl = await response.text(); // Vì server trả về kiểu String
+    return imageUrl; // vd: "http://localhost:8081/Img/xxx.jpg"
+  } catch (error) {
+    console.error("Lỗi khi upload ảnh:", error);
+    throw error;
+  }
+};
+
+export const uploadImageProduct = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file); // "file" là tên tham số đúng theo API backend
+
+  try {
+    const response = await fetch("http://localhost:8081/api/product/uploadImg", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Authorization": token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Upload ảnh thất bại");
+    }
+
+    const imageUrl = await response.text(); // Vì server trả về kiểu String
+    return imageUrl; // vd: "http://localhost:8081/Img/xxx.jpg"
+  } catch (error) {
+    console.error("Lỗi khi upload ảnh:", error);
+    throw error;
+  }
 };

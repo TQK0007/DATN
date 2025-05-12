@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,7 +36,8 @@ public class ProductController {
     @PostMapping("/create")
     public ResponseEntity<String> createNewProduct(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO)
     {
-        Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
+        //Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
+        Category category = categoryService.findById(productCreateUpdateDTO.getCategoryId());
         Product newProduct = ProductMapper.MapProductCreateUpdateDTOToProduct(productCreateUpdateDTO,category);
         Product ProductAdded = productService.save(newProduct);
 
@@ -52,7 +54,8 @@ public class ProductController {
     public ResponseEntity<String> updateProduct(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO,
                                              @PathVariable(name = "id") int id)
     {
-        Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
+        //Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
+        Category category = categoryService.findById(productCreateUpdateDTO.getCategoryId());
         Product product = productService.findById(id);
         Product updateProduct = ProductMapper.MapProductCreateUpdateDTOToProduct(productCreateUpdateDTO,product,category);
         Product productUpdated = productService.update(updateProduct);
@@ -84,4 +87,13 @@ public class ProductController {
         if(productResponseDetailDTOS.isEmpty()) return List.of();
         return productResponseDetailDTOS;
     }
+
+    @GetMapping("/getTotalProductAndPage")
+    public ResponseEntity<Map<String, Integer>> getTotalProductAndPage() {
+        int count = productService.findAll().size();
+        int page = productService.getTotalPages();
+        Map<String, Integer> result = Map.of("count", count, "page", page);
+        return ResponseEntity.ok(result);
+    }
+
 }
