@@ -4,7 +4,7 @@ import { createContext, useState, useContext, useEffect } from "react"
 
 const AuthContext = createContext(null)
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => { 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
 
@@ -18,35 +18,53 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   // Login function
-  const login = (userData) => {
-    // In a real app, this would validate with a backend
-    // For this example, we'll use hardcoded credentials
-    const validCredentials = {
-      emailPhoneNumber: "Admin@gmail.com",
-      password: "Admin",
-    }
+  
+  const login = async (userData) => {
+  try {
+    const response = await fetch("http://localhost:8080/api/account/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
 
-    if (
-      userData.emailPhoneNumber === validCredentials.emailPhoneNumber &&
-      userData.password === validCredentials.password
-    ) {
-      const user = {
-        name: "Hizrian",
-        email: userData.emailPhoneNumber,
-        role: "Admin",
+    if (!response.ok) {
+      return {
+        success: false,
+        message: "Email/số điện thoại hoặc mật khẩu không đúng",
       }
-
-      setUser(user)
-      setIsAuthenticated(true)
-      localStorage.setItem("user", JSON.stringify(user))
-      return { success: true }
     }
 
+    const token = await response.text()
+
+    // Giải mã payload từ JWT (tùy chọn, hoặc bạn có thể giữ nguyên token)
+    const payloadBase64 = token.split('.')[1]
+    const decodedPayload = JSON.parse(atob(payloadBase64))
+
+    const user = {
+      userId: decodedPayload.userId,
+      username: decodedPayload.username,
+      token: token, // bạn nên lưu token để sử dụng sau này
+    }
+
+    setUser(user)
+    setIsAuthenticated(true)
+    localStorage.setItem("user", JSON.stringify(user))
+
+
+    return { success: true }
+
+  } catch (error) {
+    console.error("Login error:", error)
     return {
       success: false,
-      message: "Email/số điện thoại hoặc mật khẩu không đúng",
+      message: "Đã có lỗi xảy ra khi đăng nhập",
     }
   }
+  
+}
+
 
   // Logout function
   const logout = () => {

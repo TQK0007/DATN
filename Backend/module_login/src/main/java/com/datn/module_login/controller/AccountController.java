@@ -126,4 +126,10 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).header(ApplicationConstants.JWT_HEADER,jwt)
                 .body(jwt);
     }
+
+    @GetMapping("/totalPage")
+    public int getTotalPage()
+    {
+        return accountService.getTotalPage();
+    }
 }

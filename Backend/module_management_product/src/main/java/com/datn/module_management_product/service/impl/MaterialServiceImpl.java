@@ -1,6 +1,5 @@
 package com.datn.module_management_product.service.impl;
 
-import com.datn.module_management_product.dto.CategoryDTO.CategoryResponseDTO;
 import com.datn.module_management_product.dto.MaterialDTO.MaterialResponseDTO;
 import com.datn.module_management_product.entity.Material;
 import com.datn.module_management_product.mapper.MaterialMapper;
@@ -25,7 +24,7 @@ public class MaterialServiceImpl implements IMaterialService {
     @Value("${pagesize}")
     private  int PAGE_SIZE;
     @Override
-    public Iterable<Material> findAll() {
+    public List<Material> findAll() {
         return materialRepository.findAll();
     }
 
@@ -48,6 +47,12 @@ public class MaterialServiceImpl implements IMaterialService {
     public Material findById(int id) {
         return materialRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Material with id " + id + " not found"));
     }
+
+    @Override
+    public int getTotalPages() {
+        return (int) Math.ceil((double) materialRepository.count() / PAGE_SIZE);
+    }
+
     @Override
     public Iterable<MaterialResponseDTO> findAllByPage(int page) {
         Page<Material> materialPage = materialRepository.findAllByPage(PageRequest.of(page-1,PAGE_SIZE));

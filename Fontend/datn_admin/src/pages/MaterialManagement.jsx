@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, Button, Table, Modal, Form } from "react-bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { materialApi, uploadImage } from "../services/api"
+import { materialApi, uploadImage } from "../services/apiModuleManageProduct"
 
 const MaterialManagement = () => {
   const [materials, setMaterials] = useState([])

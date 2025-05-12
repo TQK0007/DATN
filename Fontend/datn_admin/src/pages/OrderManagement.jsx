@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Card, Button, Table, Modal, Form, Row, Col, Badge } from "react-bootstrap"
-import { orderApi, productApi, uploadImage } from "../services/api"
+import { orderApi, productApi, uploadImage } from "../services/apiModuleManageProduct"
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([])

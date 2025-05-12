@@ -1,6 +1,5 @@
 package com.datn.module_management_product.service.impl;
 
-import com.datn.module_management_product.dto.CategoryDTO.CategoryResponseDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductResponseDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductResponseDetailDTO;
 import com.datn.module_management_product.entity.Product;
@@ -10,13 +9,11 @@ import com.datn.module_management_product.service.IProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +25,7 @@ public class ProductServiceImpl implements IProductService {
     private  int PAGE_SIZE;
 
     @Override
-    public Iterable<Product> findAll() {
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
 
@@ -50,6 +47,11 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public Product findById(int id) {
         return productRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Product with id " + id + " not found"));
+    }
+
+    @Override
+    public int getTotalPages() {
+        return (int) Math.ceil((double) productRepository.count() / PAGE_SIZE);
     }
 
     @Override

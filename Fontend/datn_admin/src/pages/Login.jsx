@@ -118,16 +118,16 @@ const Login = () => {
                     </p>
                     <p className="text-muted mb-3">hoặc đăng nhập với:</p>
                     <div className="social-login">
-                      <Button variant="outline-light" className="social-btn">
+                      <Button variant="" className="social-btn">
                         <FontAwesomeIcon icon={["fab", "facebook-f"]} />
                       </Button>
-                      <Button variant="outline-light" className="social-btn">
+                      <Button variant="" className="social-btn">
                         <FontAwesomeIcon icon={["fab", "google"]} />
                       </Button>
-                      <Button variant="outline-light" className="social-btn">
+                      <Button variant="" className="social-btn">
                         <FontAwesomeIcon icon={["fab", "twitter"]} />
                       </Button>
-                      <Button variant="outline-light" className="social-btn">
+                      <Button variant="" className="social-btn">
                         <FontAwesomeIcon icon={["fab", "github"]} />
                       </Button>
                     </div>

@@ -1,6 +1,5 @@
 package com.datn.module_management_product.service.impl;
 
-import com.datn.module_management_product.dto.CategoryDTO.CategoryResponseDTO;
 import com.datn.module_management_product.dto.OrderDTO.OrderResponseDTO;
 import com.datn.module_management_product.entity.Order;
 import com.datn.module_management_product.mapper.OrderMapper;
@@ -25,7 +24,7 @@ public class OrderServiceImpl implements IOrderService {
     private  int PAGE_SIZE;
 
     @Override
-    public Iterable<Order> findAll() {
+    public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
@@ -47,6 +46,11 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public Order findById(int id) {
         return orderRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Order with id " + id + " not found"));
+    }
+
+    @Override
+    public int getTotalPages() {
+        return (int) Math.ceil((double) orderRepository.count() / PAGE_SIZE);
     }
 
     @Override

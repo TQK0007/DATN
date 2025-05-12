@@ -25,7 +25,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
     private  int PAGE_SIZE;
 
     @Override
-    public Iterable<OrderItem> findAll() {
+    public List<OrderItem> findAll() {
         return orderItemRepository.findAll();
     }
 
@@ -47,6 +47,11 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public OrderItem findById(int id) {
         return orderItemRepository.findById(id).orElseThrow(()->new EntityNotFoundException("OrderItem with id " + id + " not found"));
+    }
+
+    @Override
+    public int getTotalPages() {
+        return (int) Math.ceil((double) orderItemRepository.count() / PAGE_SIZE);
     }
 
     @Override

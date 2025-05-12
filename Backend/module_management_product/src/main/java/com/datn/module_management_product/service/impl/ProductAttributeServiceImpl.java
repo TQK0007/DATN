@@ -1,6 +1,5 @@
 package com.datn.module_management_product.service.impl;
 
-import com.datn.module_management_product.dto.CategoryDTO.CategoryResponseDTO;
 import com.datn.module_management_product.dto.ProductAttributeDTO.ProductAttributeResponseDTO;
 import com.datn.module_management_product.entity.ProductAttribute;
 import com.datn.module_management_product.repository.ProductAttributeRepository;
@@ -8,6 +7,8 @@ import com.datn.module_management_product.service.IProductAttributeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class ProductAttributeServiceImpl implements IProductAttributeService {
     @Value("${pagesize}")
     private  int PAGE_SIZE;
     @Override
-    public Iterable<ProductAttribute> findAll() {
+    public List<ProductAttribute> findAll() {
         return productAttributeRepository.findAll();
     }
 
@@ -40,6 +41,11 @@ public class ProductAttributeServiceImpl implements IProductAttributeService {
     @Override
     public ProductAttribute findById(int id) {
         return productAttributeRepository.findById(id).get();
+    }
+
+    @Override
+    public int getTotalPages() {
+        return (int) Math.ceil((double) productAttributeRepository.count() / PAGE_SIZE);
     }
 
     @Override

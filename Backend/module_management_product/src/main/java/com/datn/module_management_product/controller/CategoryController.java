@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/category")
@@ -51,5 +52,13 @@ public class CategoryController {
         Category deleteCategory = categoryService.findById(id);
         categoryService.delete(deleteCategory);
         return ResponseEntity.ok("Xoá thành công");
+    }
+
+    @GetMapping("/getTotalCategoryAndPage")
+    public ResponseEntity<Map<String, Integer>> getTotalCategoryAndPage() {
+        int count = categoryService.findAll().size();
+        int page = categoryService.getTotalPages();
+        Map<String, Integer> result = Map.of("count", count, "page", page);
+        return ResponseEntity.ok(result);
     }
 }

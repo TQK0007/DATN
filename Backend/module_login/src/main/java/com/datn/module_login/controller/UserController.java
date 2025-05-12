@@ -21,6 +21,12 @@ public class UserController {
 
     private IUserService userService;
 
+    @GetMapping("/getAll")
+    public Iterable<UserResponseDTO> getAll()
+    {
+       return userService.findAllUserDTO();
+    }
+
     @GetMapping("/getByPage")
     public Iterable<UserResponseDTO> getByPage(@RequestParam(name = "page", defaultValue = "1") int page)
     {
@@ -55,5 +61,16 @@ public class UserController {
         return ResponseEntity.ok("Xoá thành công");
     }
 
+    @GetMapping("/totalPage")
+    public int getTotalPage()
+    {
+        return userService.getTotalPage();
+    }
+
+    @GetMapping("/getAllWithNoAccount")
+    public List<UserResponseDTO> findAllUserDTOWithNoAccount()
+    {
+        return userService.findAllUserDTOWithNoAccount();
+    }
 }
 

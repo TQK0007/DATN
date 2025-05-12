@@ -1,104 +1,108 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, Button, Table, Modal, Form } from "react-bootstrap"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { userApi } from "../services/api"
+import { useState, useEffect } from "react";
+import { Card, Button, Table, Modal, Form } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { userApi } from "../services/api";
 
 const UserManagement = () => {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showModal, setShowModal] = useState(false)
-  const [currentUser, setCurrentUser] = useState(null)
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     sex: false,
-  })
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(3) // Giả định có 3 trang
-  const itemsPerPage = 10
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 5;
+  const [triggerReload, setTriggerReload] = useState(false);
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUsers();
+  }, [triggerReload]);
 
   const fetchUsers = async () => {
     try {
-      setLoading(true)
-      const data = await userApi.getUsers()
-      setUsers(data)
+      setLoading(true);
+      const data = await userApi.getUsers();
+      setUsers(data);
+      setTotalPages(Math.ceil(data.length/itemsPerPage))
+      console.log(data)
     } catch (error) {
-      console.error("Không thể tải dữ liệu người dùng:", error)
+      console.error("Không thể tải dữ liệu người dùng:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleAddUser = () => {
-    setCurrentUser(null)
+    setCurrentUser(null);
     setFormData({
       firstName: "",
       lastName: "",
       sex: false,
-    })
-    setShowModal(true)
-  }
+    });
+    setShowModal(true);
+  };
 
   const handleEditUser = (user) => {
-    setCurrentUser(user)
+    setCurrentUser(user);
     setFormData({
       firstName: user.firstName,
       lastName: user.lastName,
       sex: user.sex,
-    })
-    setShowModal(true)
-  }
+    });
+    setShowModal(true);
+  };
 
   const handleDeleteUser = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này không?")) {
       try {
-        await userApi.deleteUser(id)
-        setUsers(users.filter((user) => user.id !== id))
+        await userApi.deleteUser(id);
+        setTriggerReload(prev => !prev);
       } catch (error) {
-        console.error("Không thể xóa người dùng:", error)
+        console.error("Không thể xóa người dùng:", error);
       }
     }
-  }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       if (currentUser) {
-        await userApi.updateUser(currentUser.id, formData)
-        setUsers(users.map((user) => (user.id === currentUser.id ? { ...user, ...formData } : user)))
+        console.log(`bắt đầu cập nhật người dùng`)
+        await userApi.updateUser(currentUser.id, formData);
+        console.log(`kết thúc cập nhật người dùng`)
       } else {
-        const newUser = await userApi.createUser(formData)
-        setUsers([...users, newUser])
+        await userApi.createUser(formData);
       }
-      setShowModal(false)
+      setShowModal(false);
+      setTriggerReload((prev) => !prev);
     } catch (error) {
-      console.error("Không thể lưu người dùng:", error)
+      console.error("Không thể lưu người dùng:", error);
     }
-  }
+  };
 
   const handlePageChange = (page) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   // Tính toán phân trang
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = users.slice(indexOfFirstItem, indexOfLastItem)
-  const totalItems = users.length
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
+  const totalItems = users.length;
 
   return (
     <Card>
@@ -150,7 +154,8 @@ const UserManagement = () => {
 
             <div className="d-flex justify-content-between align-items-center mt-3">
               <div className="pagination-info">
-                Hiển thị {indexOfFirstItem + 1} đến {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
+                Hiển thị {indexOfFirstItem + 1} đến{" "}
+                {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
               </div>
               <div className="d-flex">
                 <Button
@@ -165,9 +170,9 @@ const UserManagement = () => {
                   variant="outline-secondary"
                   size="sm"
                   className="ms-2"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
+                  onClick={() => handlePageChange(currentPage+1)}
+                  disabled={currentPage === totalPages }
+                >                 
                   Tiếp
                 </Button>
               </div>
@@ -178,7 +183,9 @@ const UserManagement = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{currentUser ? "Sửa người dùng" : "Thêm người dùng"}</Modal.Title>
+          <Modal.Title>
+            {currentUser ? "Sửa người dùng" : "Thêm người dùng"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -237,7 +244,7 @@ const UserManagement = () => {
         </Modal.Body>
       </Modal>
     </Card>
-  )
-}
+  );
+};
 
-export default UserManagement
+export default UserManagement;

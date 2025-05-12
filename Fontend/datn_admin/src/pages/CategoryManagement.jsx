@@ -1,107 +1,122 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, Button, Table, Modal, Form } from "react-bootstrap"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { categoryApi } from "../services/api"
+import { useState, useEffect } from "react";
+import { Card, Button, Table, Modal, Form } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { categoryApi } from "../services/apiModuleManageProduct";
 
 const CategoryManagement = () => {
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showModal, setShowModal] = useState(false)
-  const [currentCategory, setCurrentCategory] = useState(null)
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     type: "",
     wage: 0,
-  })
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(3) // Giả định có 3 trang
-  const itemsPerPage = 10
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCategoryAndPage, setTotalCategoryAndPage] = useState({
+    count: 1,
+    page: 1,
+  }); // Giả định có 1 trang
+  const [triggerReload, setTriggerReload] = useState(false);
+  const itemsPerPage = 5;
 
   useEffect(() => {
-    fetchCategories()
-  }, [])
+    fetchCategories();
+    fetchTotalCategoryAndPage();
+  }, [triggerReload]);
 
   const fetchCategories = async () => {
     try {
-      setLoading(true)
-      const data = await categoryApi.getCategories()
-      setCategories(data)
+      setLoading(true);
+      const data = await categoryApi.getCategories(currentPage);
+      setCategories(data);
     } catch (error) {
-      console.error("Không thể tải dữ liệu danh mục:", error)
+      console.error("Không thể tải dữ liệu danh mục:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const fetchTotalCategoryAndPage = async () => {
+    try {
+      setLoading(true);
+      const data = await categoryApi.getTotalCategoryAndPage();
+      setTotalCategoryAndPage(data);
+    } catch (error) {
+      console.error("Không thể tải dữ liệu danh mục:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddCategory = () => {
-    setCurrentCategory(null)
+    setCurrentCategory(null);
     setFormData({
       name: "",
       type: "",
       wage: 0,
-    })
-    setShowModal(true)
-  }
+    });
+    setShowModal(true);
+  };
 
   const handleEditCategory = (category) => {
-    setCurrentCategory(category)
+    setCurrentCategory(category);
     setFormData({
       name: category.name,
       type: category.type,
       wage: category.wage,
-    })
-    setShowModal(true)
-  }
+    });
+    setShowModal(true);
+  };
 
   const handleDeleteCategory = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa danh mục này không?")) {
       try {
-        await categoryApi.deleteCategory(id)
-        setCategories(categories.filter((category) => category.id !== id))
+        await categoryApi.deleteCategory(id);
+        setTriggerReload((prev) => !prev);
       } catch (error) {
-        console.error("Không thể xóa danh mục:", error)
+        console.error("Không thể xóa danh mục:", error);
       }
     }
-  }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value, type } = e.target
+    const { name, value, type } = e.target;
     setFormData({
       ...formData,
       [name]: type === "number" ? Number.parseFloat(value) : value,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       if (currentCategory) {
-        await categoryApi.updateCategory(currentCategory.id, formData)
-        setCategories(
-          categories.map((category) => (category.id === currentCategory.id ? { ...category, ...formData } : category)),
-        )
+        await categoryApi.updateCategory(currentCategory.id, formData);
       } else {
-        const newCategory = await categoryApi.createCategory(formData)
-        setCategories([...categories, newCategory])
+        await categoryApi.createCategory(formData);
       }
-      setShowModal(false)
+      setShowModal(false);
+      setTriggerReload((prev) => !prev);
     } catch (error) {
-      console.error("Không thể lưu danh mục:", error)
+      console.error("Không thể lưu danh mục:", error);
     }
-  }
+  };
 
   const handlePageChange = (page) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+    setTriggerReload((prev) => !prev);
+  };
 
   // Tính toán phân trang
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = categories.slice(indexOfFirstItem, indexOfLastItem)
-  const totalItems = categories.length
-
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = categories.slice(indexOfFirstItem, indexOfLastItem);
+  const totalItems = totalCategoryAndPage.count;
+  const totalPages = totalCategoryAndPage.page;
   return (
     <Card>
       <Card.Body>
@@ -127,7 +142,7 @@ const CategoryManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((category) => (
+                {categories.map((category) => (
                   <tr key={category.id}>
                     <td>{category.id}</td>
                     <td>{category.name}</td>
@@ -152,7 +167,8 @@ const CategoryManagement = () => {
 
             <div className="d-flex justify-content-between align-items-center mt-3">
               <div className="pagination-info">
-                Hiển thị {indexOfFirstItem + 1} đến {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
+                Hiển thị {indexOfFirstItem + 1} đến{" "}
+                {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
               </div>
               <div className="d-flex">
                 <Button
@@ -180,17 +196,31 @@ const CategoryManagement = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{currentCategory ? "Sửa danh mục" : "Thêm danh mục"}</Modal.Title>
+          <Modal.Title>
+            {currentCategory ? "Sửa danh mục" : "Thêm danh mục"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Tên</Form.Label>
-              <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange} required />
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Loại</Form.Label>
-              <Form.Control type="text" name="type" value={formData.type} onChange={handleInputChange} required />
+              <Form.Control
+                type="text"
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                required
+              />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Tiền công</Form.Label>
@@ -215,7 +245,7 @@ const CategoryManagement = () => {
         </Modal.Body>
       </Modal>
     </Card>
-  )
-}
+  );
+};
 
-export default CategoryManagement
+export default CategoryManagement;

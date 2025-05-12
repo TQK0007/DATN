@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, Button, Table, Modal, Form, Row, Col } from "react-bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { productApi, categoryApi, uploadImage } from "../services/api"
+import { productApi, categoryApi, uploadImage } from "../services/apiModuleManageProduct"
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([])

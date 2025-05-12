@@ -6,7 +6,6 @@ import com.datn.module_login.entity.User;
 import com.datn.module_login.mapper.AccountMapper;
 import com.datn.module_login.repository.AccountRepository;
 import com.datn.module_login.service.IAccountService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,7 @@ public class AccountServiceImpl implements IAccountService {
     private int PAGE_SIZE;
 
     @Override
-    public Iterable<Account> findAll() {
+    public List<Account> findAll() {
         return accountRepository.findAll();
     }
 
@@ -62,6 +61,11 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public Account findById(int id) {
         return accountRepository.findById(id).get();
+    }
+
+    @Override
+    public int getTotalPage() {
+        return (int) Math.ceil((double) findAll().size() / PAGE_SIZE);
     }
 
     @Override

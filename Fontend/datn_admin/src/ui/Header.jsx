@@ -44,10 +44,10 @@ const Header = () => {
         <Dropdown>
           <Dropdown.Toggle as="div" className="user-profile">
             <div className="user-avatar">
-              <span>{user?.name?.charAt(0) || "H"}</span>
+              <span>{user?.username?.charAt(0) || "H"}</span>
             </div>
             <div className="user-info">
-              <span>Xin chào, {user?.name || "Hizrian"}</span>
+              <span>Xin chào, {user?.username.split("@")[0] || "Hizrian"}</span>
             </div>
           </Dropdown.Toggle>
 

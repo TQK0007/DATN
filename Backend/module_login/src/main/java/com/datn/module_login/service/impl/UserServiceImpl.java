@@ -5,12 +5,10 @@ import com.datn.module_login.entity.User;
 import com.datn.module_login.mapper.UserMapper;
 import com.datn.module_login.repository.UserRepository;
 import com.datn.module_login.service.IUserService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,10 +25,9 @@ public class UserServiceImpl implements IUserService {
     private  int PAGE_SIZE;
 
     @Override
-    public Iterable<User> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
-
 
     @Override
     public User save(User user) {
@@ -53,10 +50,26 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public int getTotalPage() {
+        return (int) Math.ceil((double) findAll().size() / PAGE_SIZE);
+    }
+
+    @Override
     public Iterable<UserResponseDTO> findAllByPage(int page) {
         Page<User> userPage = userRepository.findAllByPage(PageRequest.of(page-1,PAGE_SIZE));
         List<User> users = userPage.getContent();
         List<UserResponseDTO> userResponseDTOS = users.stream().map(user -> UserMapper.MapUserToUserResponseDTO(user)).collect(Collectors.toList());
         return  userResponseDTOS;
+    }
+
+    @Override
+    public Iterable<UserResponseDTO> findAllUserDTO() {
+        return userRepository.findAll().stream().map(user -> UserMapper.MapUserToUserResponseDTO(user)).collect(Collectors.toList());
+    }
+
+    public List<UserResponseDTO> findAllUserDTOWithNoAccount()
+    {
+        List<User> users = userRepository.findAll().stream().filter(u->u.getAccount()==null).collect(Collectors.toList());
+        return users.stream().map(user -> UserMapper.MapUserToUserResponseDTO(user)).collect(Collectors.toList());
     }
 }

@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public interface IBaseService<T> {
 
-    Iterable<T> findAll();
+    List<T> findAll();
 
     T save(T t);
     T update(T t);
@@ -24,4 +25,6 @@ public interface IBaseService<T> {
                 .build().parseSignedClaims(jwtToken).getPayload();
         return (int) claims.get("userId");
     }
+
+    int getTotalPages();
 }
