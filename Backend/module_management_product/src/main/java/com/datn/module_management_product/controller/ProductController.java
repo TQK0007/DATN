@@ -1,5 +1,6 @@
 package com.datn.module_management_product.controller;
 
+import com.datn.module_management_product.dto.ProductAttributeDTO.ProductAttributeCreateUpdateDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductCreateUpdateDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductResponseDTO;
 import com.datn.module_management_product.dto.ProductDTO.ProductResponseDetailDTO;
@@ -14,7 +15,10 @@ import com.datn.module_management_product.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +40,7 @@ public class ProductController {
     @PostMapping("/create")
     public ResponseEntity<String> createNewProduct(@RequestBody ProductCreateUpdateDTO productCreateUpdateDTO)
     {
-        //Category category = categoryService.findByName(productCreateUpdateDTO.getCategoryName());
+
         Category category = categoryService.findById(productCreateUpdateDTO.getCategoryId());
         Product newProduct = ProductMapper.MapProductCreateUpdateDTOToProduct(productCreateUpdateDTO,category);
         Product ProductAdded = productService.save(newProduct);
@@ -59,6 +63,12 @@ public class ProductController {
         Product product = productService.findById(id);
         Product updateProduct = ProductMapper.MapProductCreateUpdateDTOToProduct(productCreateUpdateDTO,product,category);
         Product productUpdated = productService.update(updateProduct);
+
+        //cap nhat danh sach thuoc tinh
+        List<ProductAttribute> productAttributes = productAttributeService.findAllByProduct(productUpdated);
+        List<ProductAttributeCreateUpdateDTO> productAttributeCreateUpdateDTOS = productCreateUpdateDTO.getProductAttributes();
+        List<ProductAttribute> updateProductAttributes = ProductAttributeMapper.MapProductAttributeCreateUpateDTOToProductAttribute(productAttributeCreateUpdateDTOS,productAttributes,productUpdated);
+        productAttributeService.saveAll(updateProductAttributes);
         if(productUpdated.getId()>0) return ResponseEntity.ok("Cập nhật thành công");
         return ResponseEntity.badRequest().body("Cập nhật thất bại");
     }
@@ -94,6 +104,11 @@ public class ProductController {
         int page = productService.getTotalPages();
         Map<String, Integer> result = Map.of("count", count, "page", page);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/uploadImg")
+    public ResponseEntity<String> uploadImg(@RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(productService.uploadImg(file));
     }
 
 }

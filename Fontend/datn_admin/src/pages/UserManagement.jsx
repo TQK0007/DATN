@@ -79,6 +79,7 @@ const UserManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData)
     try {
       if (currentUser) {
         console.log(`bắt đầu cập nhật người dùng`)

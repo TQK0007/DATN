@@ -2,16 +2,21 @@
 const API_BASE_URL = "http://localhost:8081/api";
 
 // Get user from localStorage
-const user = JSON.parse(localStorage.getItem("user"));
-const token = user.token;
+// const user = JSON.parse(localStorage.getItem("user"));
+// const token = user.token;
 
 // Generic fetch function with error handling
 async function fetchData(endpoint, options = {}) {
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
+  console.log(token)
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
+        "Authorization": token,
         ...options.headers,
       },
     });
@@ -42,19 +47,19 @@ export const categoryApi = {
   getCategories: () => fetchData(`/category/getAll`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getCategoryBypage: (page) => fetchData(`/category/getByPage?page=${page}`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
    getTotalCategoryAndPage: () => fetchData(`/category/getTotalCategoryAndPage`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getCategory: (id) => fetchData(`/categories/${id}`),
@@ -63,7 +68,7 @@ export const categoryApi = {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   updateCategory: (id, data) =>
@@ -71,14 +76,14 @@ export const categoryApi = {
       method: "PUT",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   deleteCategory: (id) =>
     fetchData(`/category/delete/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": token,
+        
       },
     }),
 };
@@ -88,13 +93,13 @@ export const productApi = {
   getProducts: (page) => fetchData(`/product/getByPage?page=${page}`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getProduct: (id) => fetchData(`/product/detail/${id}`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   createProduct: (data) =>
@@ -102,7 +107,7 @@ export const productApi = {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   updateProduct: (id, data) =>
@@ -110,14 +115,14 @@ export const productApi = {
       method: "PUT",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   deleteProduct: (id) =>
     fetchData(`/product/delete/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": token,
+        
       },
     }),
 };
@@ -127,13 +132,13 @@ export const materialApi = {
   getMaterials: (page) => fetchData(`/material/getByPage?page=${page}`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
    getTotalMaterialAndPage: () => fetchData(`/material/getTotalMaterialAndPage`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getMaterial: (id) => fetchData(`/materials/${id}`),
@@ -142,7 +147,7 @@ export const materialApi = {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   updateMaterial: (id, data) =>
@@ -150,14 +155,14 @@ export const materialApi = {
       method: "PUT",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   deleteMaterial: (id) =>
     fetchData(`/material/delete/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": token,
+        
       },
     }),
   
@@ -165,25 +170,25 @@ export const materialApi = {
 
 // Order API
 export const orderApi = {
-  getOrders: () => fetchData("/order/getByPage",{
+  getOrders: (page) => fetchData(`/order/getByPage?page=${page}`,{
       method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getOrder: (id) => fetchData(`/orders/${id}`),
   createOrder: (data) =>
-    fetchData("/orders", {
+    fetchData("/order/create", {
       method: "POST",
       body: JSON.stringify(data),
     }),
   updateOrder: (id, data) =>
-    fetchData(`/orders/${id}`, {
+    fetchData(`/order/update/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     }),
   deleteOrder: (id) =>
-    fetchData(`/orders/${id}`, {
+    fetchData(`/order/delete/${id}`, {
       method: "DELETE",
     }),
 };
@@ -191,12 +196,14 @@ export const orderApi = {
 export const uploadImageMaterial = async (file) => {
   const formData = new FormData();
   formData.append("file", file); // "file" là tên tham số đúng theo API backend
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
   try {
     const response = await fetch("http://localhost:8081/api/material/uploadImg", {
       method: "POST",
       body: formData,
       headers: {
+        "Content-Type": "application/json",
         "Authorization": token,
       },
     });
@@ -216,12 +223,14 @@ export const uploadImageMaterial = async (file) => {
 export const uploadImageProduct = async (file) => {
   const formData = new FormData();
   formData.append("file", file); // "file" là tên tham số đúng theo API backend
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
   try {
     const response = await fetch("http://localhost:8081/api/product/uploadImg", {
       method: "POST",
       body: formData,
       headers: {
+        "Content-Type": "application/json",
         "Authorization": token,
       },
     });
@@ -237,3 +246,10 @@ export const uploadImageProduct = async (file) => {
     throw error;
   }
 };
+
+// dashboard API
+export const dashboardApiModuleProudct = {
+  getStatistical: () => fetchData("/dashboard/statistical",{
+    method: "GET",
+  }),
+}

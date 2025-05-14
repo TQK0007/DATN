@@ -1,6 +1,7 @@
 package com.datn.module_management_product.mapper;
 
 import com.datn.module_management_product.dto.OrderDTO.OrderCreateUpdateDTO;
+import com.datn.module_management_product.dto.OrderDTO.OrderDashBoardDTO;
 import com.datn.module_management_product.dto.OrderDTO.OrderResponseDTO;
 import com.datn.module_management_product.entity.Order;
 
@@ -8,6 +9,7 @@ public class OrderMapper {
 
     public static OrderResponseDTO MapOrderToOrderResponseDTO(Order order) {
         OrderResponseDTO orderResponseDTO = new OrderResponseDTO(
+          order.getId(),
           order.getTotalPrice(),
           order.getShippingAddress(),
           order.isPaid()
@@ -24,6 +26,7 @@ public class OrderMapper {
         order.setTotalPrice(totalPrice);
         order.setShippingAddress(orderCreateUpdateDTO.getShippingAddress());
         order.setPaid(orderCreateUpdateDTO.isPaid());
+
         return order;
     }
 
@@ -36,5 +39,15 @@ public class OrderMapper {
         order.setShippingAddress(orderCreateUpdateDTO.getShippingAddress());
         order.setPaid(orderCreateUpdateDTO.isPaid());
         return order;
+    }
+
+    public static OrderDashBoardDTO MapOrderToOrderDashBoardDTO(Order order) {
+        OrderDashBoardDTO orderDashBoardDTO = new OrderDashBoardDTO(
+          order.getId(),
+          order.getCreateAt(),
+          order.getTotalPrice(),
+          order.isPaid()
+        );
+        return orderDashBoardDTO;
     }
 }

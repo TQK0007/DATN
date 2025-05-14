@@ -23,7 +23,7 @@ const Sidebar = () => {
               <span className="logo-circle logo-circle-2"></span>
             </span>
             <span className="logo-text" style={{ color: "white" }}>
-              kaladmin
+              HTAdmin
             </span>
           </div>
         )}

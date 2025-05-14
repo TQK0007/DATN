@@ -1,6 +1,7 @@
 package com.datn.module_management_product.service.impl;
 
 import com.datn.module_management_product.dto.ProductAttributeDTO.ProductAttributeResponseDTO;
+import com.datn.module_management_product.entity.Product;
 import com.datn.module_management_product.entity.ProductAttribute;
 import com.datn.module_management_product.repository.ProductAttributeRepository;
 import com.datn.module_management_product.service.IProductAttributeService;
@@ -56,5 +57,10 @@ public class ProductAttributeServiceImpl implements IProductAttributeService {
     @Override
     public Iterable<ProductAttribute> saveAll(Iterable<ProductAttribute> productAttributes) {
         return productAttributeRepository.saveAll(productAttributes);
+    }
+
+    @Override
+    public List<ProductAttribute> findAllByProduct(Product product) {
+        return productAttributeRepository.findByProduct(product);
     }
 }

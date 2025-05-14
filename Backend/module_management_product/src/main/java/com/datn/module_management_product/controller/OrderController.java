@@ -1,15 +1,10 @@
 package com.datn.module_management_product.controller;
 
-import com.datn.module_management_product.dto.CategoryDTO.CategoryCreateDTO;
-import com.datn.module_management_product.dto.CategoryDTO.CategoryResponseDTO;
-import com.datn.module_management_product.dto.CategoryDTO.CategoryUpdateDTO;
 import com.datn.module_management_product.dto.OrderDTO.OrderCreateUpdateDTO;
 import com.datn.module_management_product.dto.OrderDTO.OrderResponseDTO;
-import com.datn.module_management_product.entity.Category;
+import com.datn.module_management_product.dto.OrderItemDTO.OrderItemCreateUpdateDTO;
 import com.datn.module_management_product.entity.Order;
 import com.datn.module_management_product.entity.OrderItem;
-import com.datn.module_management_product.entity.Product;
-import com.datn.module_management_product.mapper.CategoryMapper;
 import com.datn.module_management_product.mapper.OrderItemMapper;
 import com.datn.module_management_product.mapper.OrderMapper;
 import com.datn.module_management_product.service.IOrderItemService;
@@ -43,7 +38,6 @@ public class OrderController {
         int userId = orderService.getUserIdFromToken(jwtToken);
         Order newOrder = OrderMapper.MapOrderCreateUpdateDTOToOrder(orderCreateUpdateDTO, userId);
         Order orderAdded = orderService.save(newOrder);
-
         List<OrderItem> orderItems = orderCreateUpdateDTO.getOrderItems().stream().map(oi ->
                 OrderItemMapper.MapOrderItemCreateUpdateDTOToOrderItem(oi, orderAdded, productService.findById(oi.getProductId()))).collect(Collectors.toList());
 
@@ -61,6 +55,12 @@ public class OrderController {
         Order order = orderService.findById(id);
         Order updateOrder = OrderMapper.MapOrderCreateUpdateDTOToOrder(orderCreateUpdateDTO, userId, order);
         Order orderUpdated = orderService.update(updateOrder);
+
+        //cap nhat danh sach order item
+        List<OrderItem> orderItemsByOrder = orderItemService.findAllByOrder(updateOrder);
+        List<OrderItemCreateUpdateDTO> orderItemCreateUpdateDTOS = orderCreateUpdateDTO.getOrderItems();
+        List<OrderItem> updateOrderItem = OrderItemMapper.MapOrderItemCreateUpdateDTOToOrderItem(orderItemCreateUpdateDTOS, orderItemsByOrder);
+        orderItemService.saveAll(updateOrderItem);
         if(orderUpdated.getId()>0) return ResponseEntity.ok("Cập nhật thành công");
         return ResponseEntity.badRequest().body("Cập nhật thất bại");
     }

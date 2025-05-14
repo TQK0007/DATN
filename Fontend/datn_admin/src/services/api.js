@@ -2,17 +2,22 @@
 const API_BASE_URL = "http://localhost:8080/api";
 
 // Get user from localStorage
-const user = JSON.parse(localStorage.getItem("user"));
-const token = user.token;
+// const user = JSON.parse(localStorage.getItem("user"));
+// const token = user.token;
 
 // Generic fetch function with error handling
 async function fetchData(endpoint, options = {}) {
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
   console.log(`${API_BASE_URL}${endpoint}`)
+  console.log(token)
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
+        "Authorization": token,
         ...options.headers,
       },
     });
@@ -38,9 +43,6 @@ export const accountApi = {
   getAccounts: (page) =>
     fetchData(`/account/getByPage?page=${page}`, {
       method: "GET",
-      headers: {
-        "Authorization": token,
-      },
     }),
   getAccount: (id) => fetchData(`/accounts/${id}`),
   createAccount: (data) =>
@@ -48,30 +50,21 @@ export const accountApi = {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   updateAccount: (id, data) =>
     fetchData(`/account/update/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
-      headers: {
-        "Authorization": token,
-      },
     }),
   deleteAccount: (id) =>
     fetchData(`/account/delete/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": token,
-      },
     }),
   getTotalPages: () => 
     fetchData(`/account/totalPage`, {
       method: "GET",
-      headers: {
-        "Authorization": token,
-      },
     }),
 };
 
@@ -79,20 +72,17 @@ export const accountApi = {
 export const userApi = {
   getUsers: () => fetchData("/user/getAll",{
     method: "GET",
-      headers: {
-        "Authorization": token,
-      },
   }),
   getUsersWithNoAccount: () => fetchData("/user/getAllWithNoAccount",{
     method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getUsersByPage: () => fetchData("/user/getByPage",{
     method: "GET",
       headers: {
-        "Authorization": token,
+        
       },
   }),
   getUser: (id) => fetchData(`/users/${id}`),
@@ -101,7 +91,7 @@ export const userApi = {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       },
     }),
   updateUser: (id, data) =>
@@ -109,16 +99,91 @@ export const userApi = {
       method: "PUT",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": token,
+        
       }
     }),
   deleteUser: (id) =>
     fetchData(`/user/delete/${id}`, {
       method: "DELETE",
       headers: {
-        "Authorization": token,
+        
       }
     }),
 };
 
+// dashboard API
+export const dashboardApi = {
+  getStatistical: () => fetchData("/dashboard/statistical",{
+    method: "GET",
+  }),
+}
 
+
+// Mock data for dashboard statistics
+export const getMockDashboardData = () => {
+  return {
+    monthlyRevenue: {
+      "Tháng 1": 300000,
+      "Tháng 2": 200000,
+      "Tháng 3": 900000,
+      "Tháng 4": 500000,
+      "Tháng 5": 400000,
+      "Tháng 6": 600000,
+      "Tháng 7": 400000,
+      "Tháng 8": 600000,
+      "Tháng 9": 700000,
+      "Tháng 10": 800000,
+      "Tháng 11": 700000,
+      "Tháng 12": 400000,
+    },
+    totalRevenueByYear: 600000.0,
+    totalOrder: 3,
+    totalRevenue: 600000.0,
+    totalOrderIsPaid: 2,
+    totalSubscriber: 6,
+    users: [
+      {
+        id: 2,
+        firstName: "Thái Quốc",
+        lastName: "Khánh",
+        sex: true,
+        role: "Nhà thiết kế đồ họa",
+      },
+      {
+        id: 4,
+        firstName: "Admin",
+        lastName: "Admin",
+        sex: true,
+        role: "Quản trị viên",
+      },
+      {
+        id: 21,
+        firstName: "abc",
+        lastName: "Test",
+        sex: false,
+        role: "Nhà thiết kế Web",
+      },
+      {
+        id: 22,
+        firstName: "1",
+        lastName: "Test",
+        sex: false,
+        role: "Marketing",
+      },
+      {
+        id: 23,
+        firstName: "2",
+        lastName: "Test",
+        sex: false,
+        role: "Nhà thiết kế Front End",
+      },
+      {
+        id: 24,
+        firstName: "3",
+        lastName: "Test",
+        sex: false,
+        role: "Quảng cáo bán hàng",
+      },
+    ],
+  }
+}

@@ -14,6 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderCreateUpdateDTO {
     private String shippingAddress;
-    private boolean isPaid;
+    private boolean paid;
     private List<OrderItemCreateUpdateDTO> orderItems;
 }

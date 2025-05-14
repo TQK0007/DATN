@@ -1,6 +1,7 @@
 package com.datn.module_management_product.service.impl;
 
 import com.datn.module_management_product.dto.OrderItemDTO.OrderItemResponseDTO;
+import com.datn.module_management_product.entity.Order;
 import com.datn.module_management_product.entity.OrderItem;
 import com.datn.module_management_product.mapper.OrderItemMapper;
 import com.datn.module_management_product.repository.OrderItemRepository;
@@ -64,5 +65,10 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public Iterable<OrderItem> saveAll(Iterable<OrderItem> orderItems) {
         return orderItemRepository.saveAll(orderItems);
+    }
+
+    @Override
+    public List<OrderItem> findAllByOrder(Order order) {
+        return orderItemRepository.findByOrder(order);
     }
 }

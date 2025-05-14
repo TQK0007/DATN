@@ -60,7 +60,7 @@ const Login = () => {
                       <span className="logo-circle logo-circle-1"></span>
                       <span className="logo-circle logo-circle-2"></span>
                     </div>
-                    <h3 className="logo-text">kaladmin</h3>
+                    <h3 className="logo-text">HTAdmin</h3>
                   </div>
                   <h4 className="mb-3">Đăng nhập</h4>
                 </div>

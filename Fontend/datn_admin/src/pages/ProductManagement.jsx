@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Card, Button, Table, Modal, Form, Row, Col } from "react-bootstrap"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { productApi, categoryApi, uploadImage } from "../services/apiModuleManageProduct"
+import { productApi, categoryApi, uploadImageProduct } from "../services/apiModuleManageProduct"
 
 const ProductManagement = () => {
   const [products, setProducts] = useState([])
@@ -36,7 +36,7 @@ const ProductManagement = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const data = await productApi.getProducts()
+      const data = await productApi.getProducts(currentPage)
       setProducts(data)
     } catch (error) {
       console.error("Không thể tải dữ liệu sản phẩm:", error)
@@ -120,7 +120,7 @@ const ProductManagement = () => {
     const file = e.target.files[0]
     if (file) {
       try {
-        const imageUrl = await uploadImage(file)
+        const imageUrl = await uploadImageProduct(file)
         handleAttributeChange(index, "image", imageUrl)
       } catch (error) {
         console.error("Không thể tải lên hình ảnh:", error)

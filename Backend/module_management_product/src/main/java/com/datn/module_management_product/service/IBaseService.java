@@ -46,7 +46,7 @@ public interface IBaseService<T> {
 
         // Kiểm tra phần mở rộng
         String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        if (fileExtension == null || !fileExtension.matches("(?i)jpg|jpeg|png")) {
+        if (fileExtension == null || !fileExtension.matches("(?i)jpg|jpeg|png|webp")) {
             throw new IllegalArgumentException("Only JPG, JPEG, and PNG files are allowed.");
         }
 

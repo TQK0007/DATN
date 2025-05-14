@@ -1,146 +1,218 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Card, Button, Table, Modal, Form, Row, Col, Badge } from "react-bootstrap"
-import { orderApi, productApi, uploadImage } from "../services/apiModuleManageProduct"
+import { useState, useEffect, useRef } from "react";
+import {
+  Card,
+  Button,
+  Table,
+  Modal,
+  Form,
+  Row,
+  Col,
+  Badge,
+} from "react-bootstrap";
+import {
+  orderApi,
+  productApi,
+  uploadImageProduct,
+} from "../services/apiModuleManageProduct";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const OrderManagement = () => {
-  const [orders, setOrders] = useState([])
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showModal, setShowModal] = useState(false)
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState(null);
+
   const [formData, setFormData] = useState({
     shippingAddress: "",
-    isPaid: false,
-    orderItems: [{ quality: 1, image: "", size: "", color: "", price: 0, productId: "" }],
-  })
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(3) // Giả định có 3 trang
-  const itemsPerPage = 10
-  const fileInputRefs = useRef([])
+    paid: false,
+    orderItems: [
+      { quality: 1, image: "", size: "", color: "", price: 0, productId: "" },
+    ],
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalOrderAndPage, setTotalOrderAndPage] = useState({
+    count: 1,
+    page: 1,
+  }); // Giả định có 1 trang
+  const [triggerReload, setTriggerReload] = useState(false);
+  const itemsPerPage = 5;
+  const fileInputRefs = useRef([]);
 
   useEffect(() => {
-    fetchOrders()
-    fetchProducts()
-  }, [])
+    fetchOrders();
+    fetchProducts();
+  }, [triggerReload]);
 
   const fetchOrders = async () => {
     try {
-      setLoading(true)
-      const data = await orderApi.getOrders()
-      setOrders(data)
+      setLoading(true);
+      const data = await orderApi.getOrders(currentPage);
+      setOrders(data);
+      console.log(data)
     } catch (error) {
-      console.error("Không thể tải dữ liệu đơn hàng:", error)
+      console.error("Không thể tải dữ liệu đơn hàng:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const fetchProducts = async () => {
     try {
-      const data = await productApi.getProducts()
-      setProducts(data)
+      const data = await productApi.getProducts(currentPage);
+      setProducts(data);
     } catch (error) {
-      console.error("Không thể tải dữ liệu sản phẩm:", error)
+      console.error("Không thể tải dữ liệu sản phẩm:", error);
     }
-  }
+  };
 
   const handleAddOrder = () => {
     setFormData({
       shippingAddress: "",
-      isPaid: false,
-      orderItems: [{ quality: 1, image: "", size: "", color: "", price: 0, productId: "" }],
-    })
-    setShowModal(true)
-  }
+      paid: false,
+      orderItems: [
+        { quality: 1, image: "", size: "", color: "", price: 0, productId: "" },
+      ],
+    });
+    setShowModal(true);
+  };
+
+  const handleEditOrder = async (order) => {
+    try {
+      const orderDetail = await orderApi.getOrder(order.id);
+      setCurrentOrder(orderDetail);
+      setFormData({
+        shippingAddress: orderDetail.shippingAddress,
+        paid: orderDetail.paid,
+        orderItems: orderDetail.orderItems || [
+          {
+            quality: 1,
+            image: "",
+            size: "",
+            color: "",
+            price: 0,
+            productId: "",
+          },
+        ],
+      });
+      setShowModal(true);
+    } catch (error) {
+      console.error("Không thể tải chi tiết đơn hàng:", error);
+    }
+  };
+
+  const handleDeleteOrder = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này không?")) {
+      try {
+        await orderApi.deleteOrder(id);
+        setOrders(orders.filter((order) => order.id !== id));
+      } catch (error) {
+        console.error("Không thể xóa đơn hàng:", error);
+      }
+    }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
-    })
-  }
+    });
+  };
 
   const handleOrderItemChange = (index, field, value) => {
-    const updatedItems = [...formData.orderItems]
+    const updatedItems = [...formData.orderItems];
 
     if (field === "productId") {
-      const selectedProduct = products.find((p) => p.id.toString() === value)
+      const selectedProduct = products.find((p) => p.id.toString() === value);
       if (selectedProduct) {
         updatedItems[index] = {
           ...updatedItems[index],
           productId: value,
           price: selectedProduct.price,
-        }
+        };
       }
     } else {
       updatedItems[index] = {
         ...updatedItems[index],
-        [field]: field === "quality" || field === "price" ? Number.parseFloat(value) : value,
-      }
+        [field]:
+          field === "quality" || field === "price"
+            ? Number.parseFloat(value)
+            : value,
+      };
     }
 
     setFormData({
       ...formData,
       orderItems: updatedItems,
-    })
-  }
+    });
+  };
 
   const handleFileChange = async (index, e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
       try {
-        const imageUrl = await uploadImage(file)
-        handleOrderItemChange(index, "image", imageUrl)
+        const imageUrl = await uploadImageProduct(file);
+        handleOrderItemChange(index, "image", imageUrl);
       } catch (error) {
-        console.error("Không thể tải lên hình ảnh:", error)
+        console.error("Không thể tải lên hình ảnh:", error);
       }
     }
-  }
+  };
 
   const addOrderItem = () => {
     setFormData({
       ...formData,
-      orderItems: [...formData.orderItems, { quality: 1, image: "", size: "", color: "", price: 0, productId: "" }],
-    })
-  }
+      orderItems: [
+        ...formData.orderItems,
+        { quality: 1, image: "", size: "", color: "", price: 0, productId: "" },
+      ],
+    });
+  };
 
   const removeOrderItem = (index) => {
-    const updatedItems = [...formData.orderItems]
-    updatedItems.splice(index, 1)
+    const updatedItems = [...formData.orderItems];
+    updatedItems.splice(index, 1);
     setFormData({
       ...formData,
       orderItems: updatedItems,
-    })
-  }
+    });
+  };
 
   const calculateTotal = () => {
     return formData.orderItems.reduce((total, item) => {
-      return total + item.price * item.quality
-    }, 0)
-  }
+      return total + item.price * item.quality;
+    }, 0);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const newOrder = await orderApi.createOrder(formData)
-      setOrders([...orders, newOrder])
-      setShowModal(false)
+      if (currentOrder) {
+        await orderApi.updateOrder(currentOrder.id, formData);
+      } else {
+        await orderApi.createOrder(formData);
+      }
+      setShowModal(false);
+      setTriggerReload((prev) => !prev);
     } catch (error) {
-      console.error("Không thể tạo đơn hàng:", error)
+      console.error("Không thể lưu đơn hàng:", error);
     }
-  }
+  };
 
   const handlePageChange = (page) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+    setTriggerReload((prev) => !prev);
+  };
 
   // Tính toán phân trang
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem)
-  const totalItems = orders.length
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  //const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem)
+  const totalItems = totalOrderAndPage.count;
+  const totalPages = totalOrderAndPage.page;
 
   return (
     <Card>
@@ -162,17 +234,30 @@ const OrderManagement = () => {
                   <th>Tổng tiền</th>
                   <th>Địa chỉ giao hàng</th>
                   <th>Trạng thái thanh toán</th>
+                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((order, index) => (
-                  <tr key={index}>
+                {orders.map((order) => (
+                  <tr key={order.id}>
                     <td>{order.totalPrice.toLocaleString()}đ</td>
                     <td>{order.shippingAddress}</td>
                     <td>
-                      <Badge bg={order.isPaid ? "success" : "warning"}>
-                        {order.isPaid ? "Đã thanh toán" : "Chưa thanh toán"}
+                      <Badge bg={order.paid ? "success" : "warning"}>
+                        {order.paid ? "Đã thanh toán" : "Chưa thanh toán"}
                       </Badge>
+                    </td>
+                    <td>
+                      <FontAwesomeIcon
+                        icon="edit"
+                        className="action-icon edit-icon"
+                        onClick={() => handleEditOrder(order)}
+                      />
+                      <FontAwesomeIcon
+                        icon="trash-alt"
+                        className="action-icon delete-icon"
+                        onClick={() => handleDeleteOrder(order.id)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -181,7 +266,8 @@ const OrderManagement = () => {
 
             <div className="d-flex justify-content-between align-items-center mt-3">
               <div className="pagination-info">
-                Hiển thị {indexOfFirstItem + 1} đến {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
+                Hiển thị {indexOfFirstItem + 1} đến{" "}
+                {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
               </div>
               <div className="d-flex">
                 <Button
@@ -207,7 +293,12 @@ const OrderManagement = () => {
         )}
       </Card.Body>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size="lg"
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Tạo đơn hàng mới</Modal.Title>
         </Modal.Header>
@@ -227,8 +318,8 @@ const OrderManagement = () => {
               <Form.Check
                 type="checkbox"
                 label="Đã thanh toán"
-                name="isPaid"
-                checked={formData.isPaid}
+                name="paid"
+                checked={formData.paid}
                 onChange={handleInputChange}
               />
             </Form.Group>
@@ -237,7 +328,10 @@ const OrderManagement = () => {
 
             <div
               className="order-items-container"
-              style={{ maxHeight: formData.orderItems.length > 2 ? "400px" : "auto", overflowY: "auto" }}
+              style={{
+                maxHeight: formData.orderItems.length > 2 ? "400px" : "auto",
+                overflowY: "auto",
+              }}
             >
               {formData.orderItems.map((item, index) => (
                 <Card key={index} className="mb-3">
@@ -245,7 +339,11 @@ const OrderManagement = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <h6 className="mb-0">Sản phẩm #{index + 1}</h6>
                       {formData.orderItems.length > 1 && (
-                        <Button variant="danger" size="sm" onClick={() => removeOrderItem(index)}>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => removeOrderItem(index)}
+                        >
                           Xóa
                         </Button>
                       )}
@@ -255,7 +353,13 @@ const OrderManagement = () => {
                       <Form.Label>Sản phẩm</Form.Label>
                       <Form.Select
                         value={item.productId}
-                        onChange={(e) => handleOrderItemChange(index, "productId", e.target.value)}
+                        onChange={(e) =>
+                          handleOrderItemChange(
+                            index,
+                            "productId",
+                            e.target.value
+                          )
+                        }
                         required
                       >
                         <option value="">Chọn sản phẩm</option>
@@ -274,7 +378,13 @@ const OrderManagement = () => {
                           <Form.Control
                             type="text"
                             value={item.size}
-                            onChange={(e) => handleOrderItemChange(index, "size", e.target.value)}
+                            onChange={(e) =>
+                              handleOrderItemChange(
+                                index,
+                                "size",
+                                e.target.value
+                              )
+                            }
                             required
                           />
                         </Form.Group>
@@ -285,7 +395,13 @@ const OrderManagement = () => {
                           <Form.Control
                             type="text"
                             value={item.color}
-                            onChange={(e) => handleOrderItemChange(index, "color", e.target.value)}
+                            onChange={(e) =>
+                              handleOrderItemChange(
+                                index,
+                                "color",
+                                e.target.value
+                              )
+                            }
                             required
                           />
                         </Form.Group>
@@ -296,7 +412,13 @@ const OrderManagement = () => {
                           <Form.Control
                             type="number"
                             value={item.quality}
-                            onChange={(e) => handleOrderItemChange(index, "quality", e.target.value)}
+                            onChange={(e) =>
+                              handleOrderItemChange(
+                                index,
+                                "quality",
+                                e.target.value
+                              )
+                            }
                             min="1"
                             required
                           />
@@ -318,7 +440,11 @@ const OrderManagement = () => {
                             <img
                               src={item.image || "/placeholder.svg"}
                               alt="Preview"
-                              style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                objectFit: "cover",
+                              }}
                             />
                           </div>
                         )}
@@ -328,16 +454,27 @@ const OrderManagement = () => {
                     <div className="d-flex justify-content-between align-items-center">
                       <Form.Group className="mb-0">
                         <Form.Label>Giá</Form.Label>
-                        <Form.Control type="number" value={item.price} readOnly className="bg-light" />
+                        <Form.Control
+                          type="number"
+                          value={item.price}
+                          readOnly
+                          className="bg-light"
+                        />
                       </Form.Group>
-                      <div className="fw-bold">Tổng: {(item.price * item.quality).toLocaleString()}đ</div>
+                      <div className="fw-bold">
+                        Tổng: {(item.price * item.quality).toLocaleString()}đ
+                      </div>
                     </div>
                   </Card.Body>
                 </Card>
               ))}
             </div>
 
-            <Button variant="outline-primary" className="mb-4" onClick={addOrderItem}>
+            <Button
+              variant="outline-primary"
+              className="mb-4"
+              onClick={addOrderItem}
+            >
               Thêm sản phẩm
             </Button>
 
@@ -360,7 +497,7 @@ const OrderManagement = () => {
         </Modal.Body>
       </Modal>
     </Card>
-  )
-}
+  );
+};
 
-export default OrderManagement
+export default OrderManagement;
