@@ -1,10 +1,5 @@
 // Base URL for API calls
 const API_BASE_URL = "http://localhost:8080/api";
-
-// Get user from localStorage
-// const user = JSON.parse(localStorage.getItem("user"));
-// const token = user.token;
-
 // Generic fetch function with error handling
 async function fetchData(endpoint, options = {}) {
   // Get user from localStorage

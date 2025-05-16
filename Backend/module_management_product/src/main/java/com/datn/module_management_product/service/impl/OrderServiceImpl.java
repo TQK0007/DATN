@@ -1,6 +1,7 @@
 package com.datn.module_management_product.service.impl;
 
 import com.datn.module_management_product.dto.OrderDTO.OrderResponseDTO;
+import com.datn.module_management_product.dto.OrderDTO.OrderResponseDetailDTO;
 import com.datn.module_management_product.entity.Order;
 import com.datn.module_management_product.mapper.OrderMapper;
 import com.datn.module_management_product.repository.OrderRepository;
@@ -59,4 +60,20 @@ public class OrderServiceImpl implements IOrderService {
         List<OrderResponseDTO> orderResponseDTOS = orderPage.get().map(o-> OrderMapper.MapOrderToOrderResponseDTO(o)).collect(Collectors.toList());
         return orderResponseDTOS;
     }
+
+    @Override
+    public List<OrderResponseDTO> findAllByUserId(int userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+        List<OrderResponseDTO> orderResponseDetailDTOS = orders.stream().map(o-> OrderMapper.MapOrderToOrderResponseDTO(o)).collect(Collectors.toList());
+        return orderResponseDetailDTOS;
+    }
+
+    @Override
+    public List<OrderResponseDetailDTO> findAllDetailByUserId(int userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+        List<OrderResponseDetailDTO> orderResponseDetailDTOS = orders.stream().map(o-> OrderMapper.MapOrderToOrderResponseDetailDTO(o)).collect(Collectors.toList());
+        return orderResponseDetailDTOS;
+    }
+
+
 }

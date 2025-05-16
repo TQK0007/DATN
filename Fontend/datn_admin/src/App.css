@@ -8,6 +8,13 @@
   display: flex;
   flex-direction: column;
   background-color: #f5f7fb;
+  margin-left: 250px; /* Match sidebar width */
+  transition: margin-left 0.3s;
+  min-height: 100vh;
+}
+
+.app-container .sidebar.collapsed + .content-container {
+  margin-left: 70px; /* Match collapsed sidebar width */
 }
 
 .main-content {
@@ -136,6 +143,11 @@
   color: #6c757d;
   cursor: pointer;
   font-size: 16px;
+}
+
+.transaction-table-container {
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .transaction-table {
@@ -371,4 +383,14 @@
 .pagination-info {
   font-size: 14px;
   color: #6c757d;
+}
+
+/* Đảm bảo các card có chiều cao bằng nhau trong cùng một hàng */
+.h-100 {
+  height: 100% !important;
+}
+
+/* Đảm bảo nội dung không bị tràn */
+.overflow-hidden {
+  overflow: hidden;
 }

@@ -62,7 +62,7 @@ export const categoryApi = {
         
       },
   }),
-  getCategory: (id) => fetchData(`/categories/${id}`),
+  getCategory: (id) => fetchData(`/category/detail/${id}`),
   createCategory: (data) =>
     fetchData("/category/create", {
       method: "POST",
@@ -176,7 +176,7 @@ export const orderApi = {
         
       },
   }),
-  getOrder: (id) => fetchData(`/orders/${id}`),
+  getOrder: (id) => fetchData(`/order/detail/${id}`),
   createOrder: (data) =>
     fetchData("/order/create", {
       method: "POST",
@@ -203,7 +203,6 @@ export const uploadImageMaterial = async (file) => {
       method: "POST",
       body: formData,
       headers: {
-        "Content-Type": "application/json",
         "Authorization": token,
       },
     });
@@ -230,7 +229,6 @@ export const uploadImageProduct = async (file) => {
       method: "POST",
       body: formData,
       headers: {
-        "Content-Type": "application/json",
         "Authorization": token,
       },
     });

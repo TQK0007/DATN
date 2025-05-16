@@ -56,7 +56,7 @@ const Sidebar = () => {
             }`}
           >
             <FontAwesomeIcon icon="users" className="sidebar-icon" />
-            {!collapsed && <span className="sidebar-text">Người dùng</span>}
+            {!collapsed && <span className="sidebar-text">Danh sách người dùng</span>}
           </Link>
           <Link
             to="/products"
@@ -65,7 +65,7 @@ const Sidebar = () => {
             }`}
           >
             <FontAwesomeIcon icon="shopping-cart" className="sidebar-icon" />
-            {!collapsed && <span className="sidebar-text">Sản phẩm</span>}
+            {!collapsed && <span className="sidebar-text">Danh sách sản phẩm</span>}
           </Link>
           <Link
             to="/materials"
@@ -74,7 +74,7 @@ const Sidebar = () => {
             }`}
           >
             <FontAwesomeIcon icon="boxes" className="sidebar-icon" />
-            {!collapsed && <span className="sidebar-text">Vật liệu</span>}
+            {!collapsed && <span className="sidebar-text">Danh sách vật liệu</span>}
           </Link>
           <Link
             to="/orders"
@@ -83,7 +83,7 @@ const Sidebar = () => {
             }`}
           >
             <FontAwesomeIcon icon="clipboard-list" className="sidebar-icon" />
-            {!collapsed && <span className="sidebar-text">Đơn hàng</span>}
+            {!collapsed && <span className="sidebar-text">Danh sách đơn hàng</span>}
           </Link>
           <Link
             to="/categories"
@@ -92,7 +92,7 @@ const Sidebar = () => {
             }`}
           >
             <FontAwesomeIcon icon="folder-open" className="sidebar-icon" />
-            {!collapsed && <span className="sidebar-text">Danh mục</span>}
+            {!collapsed && <span className="sidebar-text">Danh sách danh mục</span>}
           </Link>
           <Link
             to="/accounts"
@@ -101,7 +101,7 @@ const Sidebar = () => {
             }`}
           >
             <FontAwesomeIcon icon="user-circle" className="sidebar-icon" />
-            {!collapsed && <span className="sidebar-text">Tài khoản</span>}
+            {!collapsed && <span className="sidebar-text">Danh sách tài khoản</span>}
           </Link>
         </div>
       </div>

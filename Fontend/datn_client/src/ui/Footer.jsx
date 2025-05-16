@@ -1,152 +1,122 @@
-export default function Footer() {
+import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faFacebook, faTwitter, faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons"
+import { faEnvelope, faPhone, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons"
 
-	
-
-
+const Footer = () => {
   return (
-    // <!-- Footer -->
-	<footer class="bg3 p-t-75 p-b-32">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Categories
-					</h4>
+    <footer className="bg-dark text-white pt-5 pb-3">
+      <div className="container">
+        <div className="row">
+          {/* Thông tin cửa hàng */}
+          <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
+            <h5 className="text-uppercase mb-4">Shop Thời Trang</h5>
+            <p>Shop thời trang chất lượng cao, mang đến cho bạn những sản phẩm tốt nhất với giá cả hợp lý.</p>
+            <div className="mt-4">
+              <a href="#" className="text-white me-3 fs-5">
+                <FontAwesomeIcon icon={faFacebook} />
+              </a>
+              <a href="#" className="text-white me-3 fs-5">
+                <FontAwesomeIcon icon={faTwitter} />
+              </a>
+              <a href="#" className="text-white me-3 fs-5">
+                <FontAwesomeIcon icon={faInstagram} />
+              </a>
+              <a href="#" className="text-white fs-5">
+                <FontAwesomeIcon icon={faYoutube} />
+              </a>
+            </div>
+          </div>
 
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Women
-							</a>
-						</li>
+          {/* Danh mục nhanh */}
+          <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
+            <h5 className="text-uppercase mb-4">Danh mục</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2">
+                <Link to="/products?gender=nam" className="text-white text-decoration-none">
+                  Thời trang nam
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/products?gender=nu" className="text-white text-decoration-none">
+                  Thời trang nữ
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/products" className="text-white text-decoration-none">
+                  Sản phẩm mới
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/products" className="text-white text-decoration-none">
+                  Khuyến mãi
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Men
-							</a>
-						</li>
+          {/* Liên kết hữu ích */}
+          <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
+            <h5 className="text-uppercase mb-4">Liên kết</h5>
+            <ul className="list-unstyled">
+              <li className="mb-2">
+                <Link to="/" className="text-white text-decoration-none">
+                  Trang chủ
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/products" className="text-white text-decoration-none">
+                  Sản phẩm
+                </Link>
+              </li>
+              <li className="mb-2">
+                <a href="#" className="text-white text-decoration-none">
+                  Về chúng tôi
+                </a>
+              </li>
+              <li className="mb-2">
+                <a href="#" className="text-white text-decoration-none">
+                  Chính sách bảo mật
+                </a>
+              </li>
+              <li className="mb-2">
+                <a href="#" className="text-white text-decoration-none">
+                  Điều khoản dịch vụ
+                </a>
+              </li>
+            </ul>
+          </div>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shoes
-							</a>
-						</li>
+          {/* Thông tin liên hệ */}
+          <div className="col-lg-3 col-md-6">
+            <h5 className="text-uppercase mb-4">Liên hệ</h5>
+            <ul className="list-unstyled">
+              <li className="mb-3">
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="me-2" />
+                123 Đường ABC, Quận XYZ, Hà Nội
+              </li>
+              <li className="mb-3">
+                <FontAwesomeIcon icon={faPhone} className="me-2" />
+                0987 654 321
+              </li>
+              <li className="mb-3">
+                <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+                contact@shopthoi.vn
+              </li>
+            </ul>
+          </div>
+        </div>
 
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Watches
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Help
-					</h4>
-
-					<ul>
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Track Order
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Returns 
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								Shipping
-							</a>
-						</li>
-
-						<li class="p-b-10">
-							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-								FAQs
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						GET IN TOUCH
-					</h4>
-
-					<p class="stext-107 cl7 size-201">
-						Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
-					</p>
-
-					<div class="p-t-27">
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-facebook"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-instagram"></i>
-						</a>
-
-						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-							<i class="fa fa-pinterest-p"></i>
-						</a>
-					</div>
-				</div>
-
-				<div class="col-sm-6 col-lg-3 p-b-50">
-					<h4 class="stext-301 cl0 p-b-30">
-						Newsletter
-					</h4>
-
-					<form>
-						<div class="wrap-input1 w-full p-b-4">
-							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com"/>
-							<div class="focus-input1 trans-04"></div>
-						</div>
-
-						<div class="p-t-18">
-							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-
-			<div class="p-t-40">
-				<div class="flex-c-m flex-w p-b-18">
-					<a href="#" class="m-all-1">
-						<img src="/assets/images/icons/icon-pay-01.png" alt="ICON-PAY"/>
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/images/icons/icon-pay-02.png" alt="ICON-PAY"/>
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/images/icons/icon-pay-03.png" alt="ICON-PAY"/>
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/images/icons/icon-pay-04.png" alt="ICON-PAY"/>
-					</a>
-
-					<a href="#" class="m-all-1">
-						<img src="/assets/images/icons/icon-pay-05.png" alt="ICON-PAY"/>
-					</a>
-				</div>
-
-				<p class="stext-107 cl6 txt-center">
-					{/* <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --> */}
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-{/* <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --> */}
-
-				</p>
-			</div>
-		</div>
-	</footer>
+        {/* Bản quyền */}
+        <div className="row mt-4">
+          <div className="col-12 text-center">
+            <hr className="bg-light" />
+            <p className="mb-0">&copy; {new Date().getFullYear()} Shop Thời Trang. Tất cả các quyền được bảo lưu.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   )
 }
+
+export default Footer

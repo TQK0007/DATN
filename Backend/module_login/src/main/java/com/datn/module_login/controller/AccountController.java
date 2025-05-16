@@ -132,4 +132,29 @@ public class AccountController {
     {
         return accountService.getTotalPage();
     }
+
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<AccountUserUpdateDTO> getAccountUser(@PathVariable(value = "userId") int userId)
+    {
+        User user = userService.findById(userId);
+        Account account = user.getAccount();
+        AccountUserUpdateDTO accountUserUpdateDTO = AccountMapper.MapAccountUserToAccountUserUpdateDTO(account,user);
+        return  ResponseEntity.ok(accountUserUpdateDTO);
+    }
+
+    @PutMapping("/updateProfile/{userId}")
+    public ResponseEntity<String> updateAccountUser(@RequestBody AccountUserUpdateDTO accountUserUpdateDTO,
+                                                     @PathVariable(value = "userId") int userId) {
+        User user = userService.findById(userId);
+        Account account = user.getAccount();
+        accountUserUpdateDTO.setPassword(passwordEncoder.encode(accountUserUpdateDTO.getPassword()));
+        //chuyen dto sang entity
+        Account accountUpdate = AccountMapper.MapAccountUserUpdateDTOToAccount(accountUserUpdateDTO,account);
+        Account accountUpdated = accountService.update(accountUpdate);
+
+        User userUpdate = UserMapper.MapAccountUserUpdateDTOToUser(accountUserUpdateDTO,user);
+        User userUpdated = userService.update(userUpdate);
+        return ResponseEntity.ok("Cap nhat thanh cong");
+    }
+
 }

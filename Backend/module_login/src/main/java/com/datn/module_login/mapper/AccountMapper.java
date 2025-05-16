@@ -1,9 +1,6 @@
 package com.datn.module_login.mapper;
 
-import com.datn.module_login.dto.AccountDTO.AccountCreateDTO;
-import com.datn.module_login.dto.AccountDTO.AccountDetails;
-import com.datn.module_login.dto.AccountDTO.AccountResponseDTO;
-import com.datn.module_login.dto.AccountDTO.AccountUpdateDTO;
+import com.datn.module_login.dto.AccountDTO.*;
 import com.datn.module_login.entity.Account;
 import com.datn.module_login.entity.User;
 import com.datn.module_login.repository.UserRepository;
@@ -59,4 +56,25 @@ public class AccountMapper {
         return  accountUpdate;
     }
 
+
+    public static AccountUserUpdateDTO MapAccountUserToAccountUserUpdateDTO(Account account, User user)
+    {
+        AccountUserUpdateDTO accountUserUpdateDTO = new AccountUserUpdateDTO(
+                user.getFirstName(),
+                user.getLastName(),
+                account.getEmail(),
+                account.getPhoneNumber(),
+                account.getPassword(),
+                user.isSex()
+        );
+        return accountUserUpdateDTO;
+    }
+
+    public static Account MapAccountUserUpdateDTOToAccount(AccountUserUpdateDTO accountUserUpdateDTO, Account account)
+    {
+        account.setEmail(accountUserUpdateDTO.getEmail());
+        account.setPhoneNumber(accountUserUpdateDTO.getPhoneNumber());
+        account.setPassword(accountUserUpdateDTO.getPassword());
+        return account;
+    }
 }

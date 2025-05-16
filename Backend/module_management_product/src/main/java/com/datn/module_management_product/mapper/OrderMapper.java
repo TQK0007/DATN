@@ -3,7 +3,12 @@ package com.datn.module_management_product.mapper;
 import com.datn.module_management_product.dto.OrderDTO.OrderCreateUpdateDTO;
 import com.datn.module_management_product.dto.OrderDTO.OrderDashBoardDTO;
 import com.datn.module_management_product.dto.OrderDTO.OrderResponseDTO;
+import com.datn.module_management_product.dto.OrderDTO.OrderResponseDetailDTO;
+import com.datn.module_management_product.dto.OrderItemDTO.OrderItemResponseDTO;
 import com.datn.module_management_product.entity.Order;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderMapper {
 
@@ -49,5 +54,16 @@ public class OrderMapper {
           order.isPaid()
         );
         return orderDashBoardDTO;
+    }
+
+    public static OrderResponseDetailDTO MapOrderToOrderResponseDetailDTO(Order order) {
+        List<OrderItemResponseDTO> orderItemResponseDTOs = order.getOrderItems().stream().map(OrderItemMapper::MapOrderItemToOrderItemResponseDTO).collect(Collectors.toList());
+        OrderResponseDetailDTO orderResponseDetailDTO = new OrderResponseDetailDTO(
+          order.getId(),
+          order.getShippingAddress(),
+          order.isPaid(),
+          orderItemResponseDTOs
+        );
+        return orderResponseDetailDTO;
     }
 }

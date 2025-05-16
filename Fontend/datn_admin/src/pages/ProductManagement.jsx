@@ -1,16 +1,20 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Card, Button, Table, Modal, Form, Row, Col } from "react-bootstrap"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { productApi, categoryApi, uploadImageProduct } from "../services/apiModuleManageProduct"
+import { useState, useEffect, useRef } from "react";
+import { Card, Button, Table, Modal, Form, Row, Col } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  productApi,
+  categoryApi,
+  uploadImageProduct,
+} from "../services/apiModuleManageProduct";
 
 const ProductManagement = () => {
-  const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showModal, setShowModal] = useState(false)
-  const [currentProduct, setCurrentProduct] = useState(null)
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     price: 0,
@@ -18,44 +22,44 @@ const ProductManagement = () => {
     description: "",
     categoryId: 1,
     productAttributes: [{ image: "", size: "", color: "", quality: 0 }],
-  })
-  const [currentPage, setCurrentPage] = useState(1)
+  });
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalProductAndPage, setTotalProductAndPage] = useState({
     count: 1,
     page: 1,
   }); // Giả định có 1 trang
   const [triggerReload, setTriggerReload] = useState(false);
-  const itemsPerPage = 5
-  const fileInputRefs = useRef([])
+  const itemsPerPage = 5;
+  const fileInputRefs = useRef([]);
 
   useEffect(() => {
-    fetchProducts()
-    fetchCategories()
-  }, [triggerReload])
+    fetchProducts();
+    fetchCategories();
+  }, [triggerReload]);
 
   const fetchProducts = async () => {
     try {
-      setLoading(true)
-      const data = await productApi.getProducts(currentPage)
-      setProducts(data)
+      setLoading(true);
+      const data = await productApi.getProducts(currentPage);
+      setProducts(data);
     } catch (error) {
-      console.error("Không thể tải dữ liệu sản phẩm:", error)
+      console.error("Không thể tải dữ liệu sản phẩm:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const fetchCategories = async () => {
     try {
-      const data = await categoryApi.getCategories()
-      setCategories(data)
+      const data = await categoryApi.getCategories();
+      setCategories(data);
     } catch (error) {
-      console.error("Không thể tải dữ liệu danh mục:", error)
+      console.error("Không thể tải dữ liệu danh mục:", error);
     }
-  }
+  };
 
   const handleAddProduct = () => {
-    setCurrentProduct(null)
+    setCurrentProduct(null);
     setFormData({
       name: "",
       price: 0,
@@ -63,116 +67,117 @@ const ProductManagement = () => {
       description: "",
       categoryId: 1,
       productAttributes: [{ image: "", size: "", color: "", quality: 0 }],
-    })
-    setShowModal(true)
-  }
+    });
+    setShowModal(true);
+  };
 
   const handleEditProduct = async (product) => {
     try {
-      const productDetail = await productApi.getProduct(product.id)
-      setCurrentProduct(productDetail)
+      const productDetail = await productApi.getProduct(product.id);
+      setCurrentProduct(productDetail);
       setFormData({
         name: productDetail.name,
         price: productDetail.price,
         discount: productDetail.discount,
         description: productDetail.description,
         categoryId: productDetail.categoryId,
-        productAttributes: productDetail.productAttributes || [{ image: "", size: "", color: "", quality: 0 }],
-      })
-      setShowModal(true)
+        productAttributes: productDetail.productAttributes || [
+          { image: "", size: "", color: "", quality: 0 },
+        ],
+      });
+      setShowModal(true);
     } catch (error) {
-      console.error("Không thể tải chi tiết sản phẩm:", error)
+      console.error("Không thể tải chi tiết sản phẩm:", error);
     }
-  }
+  };
 
   const handleDeleteProduct = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
       try {
-        await productApi.deleteProduct(id)
-        setProducts(products.filter((product) => product.id !== id))
+        await productApi.deleteProduct(id);
+        setTriggerReload((prev) => !prev);
       } catch (error) {
-        console.error("Không thể xóa sản phẩm:", error)
+        console.error("Không thể xóa sản phẩm:", error);
       }
     }
-  }
+  };
 
   const handleInputChange = (e) => {
-    const { name, value, type } = e.target
+    const { name, value, type } = e.target;
     setFormData({
       ...formData,
       [name]: type === "number" ? Number.parseFloat(value) : value,
-    })
-  }
+    });
+  };
 
   const handleAttributeChange = (index, field, value) => {
-    const updatedAttributes = [...formData.productAttributes]
+    const updatedAttributes = [...formData.productAttributes];
     updatedAttributes[index] = {
       ...updatedAttributes[index],
       [field]: field === "quality" ? Number.parseInt(value) : value,
-    }
+    };
     setFormData({
       ...formData,
       productAttributes: updatedAttributes,
-    })
-  }
+    });
+  };
 
   const handleFileChange = async (index, e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
       try {
-        const imageUrl = await uploadImageProduct(file)
-        handleAttributeChange(index, "image", imageUrl)
+        const imageUrl = await uploadImageProduct(file);
+        handleAttributeChange(index, "image", imageUrl);
       } catch (error) {
-        console.error("Không thể tải lên hình ảnh:", error)
+        console.error("Không thể tải lên hình ảnh:", error);
       }
     }
-  }
+  };
 
   const addAttribute = () => {
     setFormData({
       ...formData,
-      productAttributes: [...formData.productAttributes, { image: "", size: "", color: "", quality: 0 }],
-    })
-  }
+      productAttributes: [
+        ...formData.productAttributes,
+        { image: "", size: "", color: "", quality: 0 },
+      ],
+    });
+  };
 
   const removeAttribute = (index) => {
-    const updatedAttributes = [...formData.productAttributes]
-    updatedAttributes.splice(index, 1)
+    const updatedAttributes = [...formData.productAttributes];
+    updatedAttributes.splice(index, 1);
     setFormData({
       ...formData,
       productAttributes: updatedAttributes,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       if (currentProduct) {
-        await productApi.updateProduct(currentProduct.id, formData)
-        setProducts(
-          products.map((product) => (product.id === currentProduct.id ? { ...product, ...formData } : product)),
-        )
+        await productApi.updateProduct(currentProduct.id, formData);
       } else {
-        const newProduct = await productApi.createProduct(formData)
-        setProducts([...products, newProduct])
+        await productApi.createProduct(formData);
       }
-      setShowModal(false)
+      setShowModal(false);
+      setTriggerReload((prev) => !prev);
     } catch (error) {
-      console.error("Không thể lưu sản phẩm:", error)
+      console.error("Không thể lưu sản phẩm:", error);
     }
-  }
+  };
 
   const handlePageChange = (page) => {
-    setCurrentPage(page)
-  }
+    setCurrentPage(page);
+  };
 
   // Tính toán phân trang
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   //const currentItems = products.slice(indexOfFirstItem, indexOfLastItem)
-  const totalItems = totalProductAndPage.count
-  const totalPages = totalProductAndPage.page
-  
+  const totalItems = totalProductAndPage.count;
+  const totalPages = totalProductAndPage.page;
 
   return (
     <Card>
@@ -226,7 +231,8 @@ const ProductManagement = () => {
 
             <div className="d-flex justify-content-between align-items-center mt-3">
               <div className="pagination-info">
-                Hiển thị {indexOfFirstItem + 1} đến {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
+                Hiển thị {indexOfFirstItem + 1} đến{" "}
+                {Math.min(indexOfLastItem, totalItems)} của {totalItems} kết quả
               </div>
               <div className="d-flex">
                 <Button
@@ -252,9 +258,16 @@ const ProductManagement = () => {
         )}
       </Card.Body>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size="lg"
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title>{currentProduct ? "Sửa sản phẩm" : "Thêm sản phẩm"}</Modal.Title>
+          <Modal.Title>
+            {currentProduct ? "Sửa sản phẩm" : "Thêm sản phẩm"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -262,13 +275,24 @@ const ProductManagement = () => {
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Tên</Form.Label>
-                  <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange} required />
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Danh mục</Form.Label>
-                  <Form.Select name="categoryId" value={formData.categoryId} onChange={handleInputChange} required>
+                  <Form.Select
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleInputChange}
+                    required
+                  >
                     <option value="">Chọn danh mục</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
@@ -326,7 +350,10 @@ const ProductManagement = () => {
 
             <div
               className="attributes-container"
-              style={{ maxHeight: formData.productAttributes.length > 2 ? "400px" : "auto" }}
+              style={{
+                maxHeight:
+                  formData.productAttributes.length > 2 ? "400px" : "auto",
+              }}
             >
               {formData.productAttributes.map((attr, index) => (
                 <Card key={index} className="mb-3">
@@ -334,7 +361,11 @@ const ProductManagement = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <h6 className="mb-0">Thuộc tính #{index + 1}</h6>
                       {formData.productAttributes.length > 1 && (
-                        <Button variant="danger" size="sm" onClick={() => removeAttribute(index)}>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => removeAttribute(index)}
+                        >
                           Xóa
                         </Button>
                       )}
@@ -354,7 +385,11 @@ const ProductManagement = () => {
                             <img
                               src={attr.image || "/placeholder.svg"}
                               alt="Preview"
-                              style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                objectFit: "cover",
+                              }}
                             />
                           </div>
                         )}
@@ -368,7 +403,13 @@ const ProductManagement = () => {
                           <Form.Control
                             type="text"
                             value={attr.size}
-                            onChange={(e) => handleAttributeChange(index, "size", e.target.value)}
+                            onChange={(e) =>
+                              handleAttributeChange(
+                                index,
+                                "size",
+                                e.target.value
+                              )
+                            }
                             required
                           />
                         </Form.Group>
@@ -379,7 +420,13 @@ const ProductManagement = () => {
                           <Form.Control
                             type="text"
                             value={attr.color}
-                            onChange={(e) => handleAttributeChange(index, "color", e.target.value)}
+                            onChange={(e) =>
+                              handleAttributeChange(
+                                index,
+                                "color",
+                                e.target.value
+                              )
+                            }
                             required
                           />
                         </Form.Group>
@@ -390,7 +437,13 @@ const ProductManagement = () => {
                           <Form.Control
                             type="number"
                             value={attr.quality}
-                            onChange={(e) => handleAttributeChange(index, "quality", e.target.value)}
+                            onChange={(e) =>
+                              handleAttributeChange(
+                                index,
+                                "quality",
+                                e.target.value
+                              )
+                            }
                             min="0"
                             required
                           />
@@ -402,7 +455,11 @@ const ProductManagement = () => {
               ))}
             </div>
 
-            <Button variant="outline-primary" className="mb-4" onClick={addAttribute}>
+            <Button
+              variant="outline-primary"
+              className="mb-4"
+              onClick={addAttribute}
+            >
               Thêm thuộc tính
             </Button>
 
@@ -418,7 +475,7 @@ const ProductManagement = () => {
         </Modal.Body>
       </Modal>
     </Card>
-  )
-}
+  );
+};
 
-export default ProductManagement
+export default ProductManagement;

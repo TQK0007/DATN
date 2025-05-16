@@ -28,7 +28,15 @@ public class SecurityConfig {
                 .sessionManagement(sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request)->request
-                        .requestMatchers("/api/product/getProductByName","/api/product/getByPage","/Img/**").permitAll()
+                        .requestMatchers("/api/product/getProductByName/**",
+                                "/api/product/getByPage/**",
+                                "/Img/**",
+                                "/api/product/detail/**",
+                                "/api/product/related/**",
+                                "/api/feedback/product/**").permitAll()
+                        .requestMatchers("/api/order/user-orders/**").hasRole("User")
+                        .requestMatchers("/api/feedback/create",
+                                "/api/order/create").hasAnyRole("User", "Admin")
                         .requestMatchers("/api/**").hasRole("Admin")
 
                 );
@@ -42,7 +50,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173")); // đúng origin FE
+        config.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5174")); // đúng origin FE
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -51,4 +59,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }

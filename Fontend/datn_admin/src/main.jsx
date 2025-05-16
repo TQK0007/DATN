@@ -25,6 +25,10 @@ import {
   faCog,
   faSignOutAlt,
   faChevronDown,
+  faChartBar,
+  faChartLine,
+  faChartPie,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons"
 import { faFacebookF, faGoogle, faTwitter, faGithub } from "@fortawesome/free-brands-svg-icons"
 
@@ -54,6 +58,10 @@ library.add(
   faGoogle,
   faTwitter,
   faGithub,
+  faChartBar,
+  faChartLine,
+  faChartPie,
+  faDownload,
 )
 
 ReactDOM.createRoot(document.getElementById("root")).render(

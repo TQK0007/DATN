@@ -300,7 +300,7 @@ const OrderManagement = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Tạo đơn hàng mới</Modal.Title>
+          <Modal.Title>{currentOrder? "Sửa đơn hàng":"Tạo đơn hàng mới"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -325,7 +325,6 @@ const OrderManagement = () => {
             </Form.Group>
 
             <h5 className="mt-4 mb-3">Sản phẩm đặt hàng</h5>
-
             <div
               className="order-items-container"
               style={{
@@ -490,7 +489,7 @@ const OrderManagement = () => {
                 Hủy
               </Button>
               <Button variant="primary" type="submit">
-                Tạo đơn hàng
+                {currentOrder? "Sửa đơn hàng" : "Tạo đơn hàng"}
               </Button>
             </div>
           </Form>

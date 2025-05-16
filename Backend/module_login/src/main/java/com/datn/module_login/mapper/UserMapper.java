@@ -1,6 +1,7 @@
 package com.datn.module_login.mapper;
 
 import com.datn.module_login.dto.AccountDTO.AccountDetails;
+import com.datn.module_login.dto.AccountDTO.AccountUserUpdateDTO;
 import com.datn.module_login.dto.UserDTO.UserCreateUpdateDTO;
 import com.datn.module_login.dto.UserDTO.UserResponseDTO;
 import com.datn.module_login.entity.User;
@@ -40,5 +41,12 @@ public class UserMapper {
         updateUser.setLastName(userCreateUpdateDTO.lastName());
         updateUser.setSex(userCreateUpdateDTO.sex());
         return updateUser;
+    }
+
+    public static User MapAccountUserUpdateDTOToUser(AccountUserUpdateDTO accountUserUpdateDTO, User user) {
+        user.setFirstName(accountUserUpdateDTO.getFirstName());
+        user.setLastName(accountUserUpdateDTO.getLastName());
+        user.setSex(accountUserUpdateDTO.isSex());
+        return user;
     }
 }
