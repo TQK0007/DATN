@@ -1,0 +1,25 @@
+CREATE DATABASE DATN_USER_MANAGEMENT;
+USE DATN_USER_MANAGEMENT;
+
+CREATE TABLE User (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    FirstName NVARCHAR(255) NOT NULL,
+    LastName NVARCHAR(255) NOT NULL,
+    Sex BIT
+);
+
+CREATE TABLE Account (
+	Id INT PRIMARY KEY AUTO_INCREMENT,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    PhoneNumber VARCHAR(10) NOT NULL UNIQUE,
+    Password VARCHAR(255) NOT NULL,
+    RoleName VARCHAR(255) NOT NULL,
+    UserId INT NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES User(Id) ON DELETE CASCADE
+);
+
+INSERT INTO USER(`FirstName`, `LastName`, `Sex`) 
+VALUES("Admin","Admin",1);
+
+INSERT INTO Account(`Email`, `PhoneNumber`, `Password`, `RoleName`, `UserId`)
+VALUES("Admin@gmail.com","077777777","Admin","Admin",4);

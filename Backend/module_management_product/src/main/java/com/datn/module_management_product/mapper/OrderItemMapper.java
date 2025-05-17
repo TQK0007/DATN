@@ -18,7 +18,9 @@ public class OrderItemMapper {
                 orderItem.getImage(),
                 orderItem.getSize(),
                 orderItem.getPrice(),
-                orderItem.getColor()
+                orderItem.getColor(),
+                orderItem.getProduct().getName(),
+                orderItem.getProduct().getId()
         );
         return orderItemResponseDTO;
     }

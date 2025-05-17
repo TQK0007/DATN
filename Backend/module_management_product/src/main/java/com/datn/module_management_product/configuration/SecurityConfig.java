@@ -33,10 +33,14 @@ public class SecurityConfig {
                                 "/Img/**",
                                 "/api/product/detail/**",
                                 "/api/product/related/**",
-                                "/api/feedback/product/**").permitAll()
-                        .requestMatchers("/api/order/user-orders/**").hasRole("User")
+                                "/api/feedback/product/**",
+                                "/api/cart/create").permitAll()
+                        .requestMatchers("/api/order/user-orders/**",
+                                "/api/cartitem/**",
+                                "/api/cart/getByUserId/**",
+                                "/api/cart/getDetail/**").hasRole("User")
                         .requestMatchers("/api/feedback/create",
-                                "/api/order/create").hasAnyRole("User", "Admin")
+                                "/api/order/**").hasAnyRole("User", "Admin")
                         .requestMatchers("/api/**").hasRole("Admin")
 
                 );
