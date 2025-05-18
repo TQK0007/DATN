@@ -44,6 +44,7 @@ const OrderManagement = () => {
   useEffect(() => {
     fetchOrders();
     fetchProducts();
+    fetchTotalOrderAndPage();
   }, [triggerReload]);
 
   const fetchOrders = async () => {
@@ -51,7 +52,7 @@ const OrderManagement = () => {
       setLoading(true);
       const data = await orderApi.getOrders(currentPage);
       setOrders(data);
-      console.log(data)
+      console.log(data);
     } catch (error) {
       console.error("Không thể tải dữ liệu đơn hàng:", error);
     } finally {
@@ -65,6 +66,18 @@ const OrderManagement = () => {
       setProducts(data);
     } catch (error) {
       console.error("Không thể tải dữ liệu sản phẩm:", error);
+    }
+  };
+
+  const fetchTotalOrderAndPage = async () => {
+    try {
+      setLoading(true);
+      const data = await orderApi.getTotalOrderAndPage();
+      setTotalOrderAndPage(data);
+    } catch (error) {
+      console.error("Không thể tải dữ liệu danh mục:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,7 +120,7 @@ const OrderManagement = () => {
     if (window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này không?")) {
       try {
         await orderApi.deleteOrder(id);
-        setOrders(orders.filter((order) => order.id !== id));
+        setTriggerReload((prev) => !prev);
       } catch (error) {
         console.error("Không thể xóa đơn hàng:", error);
       }
@@ -300,7 +313,9 @@ const OrderManagement = () => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>{currentOrder? "Sửa đơn hàng":"Tạo đơn hàng mới"}</Modal.Title>
+          <Modal.Title>
+            {currentOrder ? "Sửa đơn hàng" : "Tạo đơn hàng mới"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -489,7 +504,7 @@ const OrderManagement = () => {
                 Hủy
               </Button>
               <Button variant="primary" type="submit">
-                {currentOrder? "Sửa đơn hàng" : "Tạo đơn hàng"}
+                {currentOrder ? "Sửa đơn hàng" : "Tạo đơn hàng"}
               </Button>
             </div>
           </Form>

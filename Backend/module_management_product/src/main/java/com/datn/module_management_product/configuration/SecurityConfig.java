@@ -33,6 +33,8 @@ public class SecurityConfig {
                                 "/Img/**",
                                 "/api/product/detail/**",
                                 "/api/product/related/**",
+                                "/api/product/getByFilters/**",
+                                "/api/product/getByFiltersAndSort/**",
                                 "/api/feedback/product/**",
                                 "/api/cart/create").permitAll()
                         .requestMatchers("/api/order/user-orders/**",
@@ -55,7 +57,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5174")); // đúng origin FE
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

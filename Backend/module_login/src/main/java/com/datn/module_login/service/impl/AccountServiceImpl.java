@@ -44,6 +44,11 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
+    public int findAccountIdByUserName(String userName) {
+        return accountRepository.findAccountIdByUserName(userName);
+    }
+
+    @Override
     public Account save(Account account) {
         return accountRepository.save(account);
     }

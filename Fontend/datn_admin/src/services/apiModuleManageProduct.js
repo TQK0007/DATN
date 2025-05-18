@@ -138,7 +138,6 @@ export const materialApi = {
    getTotalMaterialAndPage: () => fetchData(`/material/getTotalMaterialAndPage`,{
       method: "GET",
       headers: {
-        
       },
   }),
   getMaterial: (id) => fetchData(`/materials/${id}`),
@@ -173,10 +172,14 @@ export const orderApi = {
   getOrders: (page) => fetchData(`/order/getByPage?page=${page}`,{
       method: "GET",
       headers: {
-        
       },
   }),
   getOrder: (id) => fetchData(`/order/detail/${id}`),
+  getTotalOrderAndPage: () => fetchData(`/order/getTotalOrderAndPage`,{
+      method: "GET",
+      headers: {
+      },
+  }),
   createOrder: (data) =>
     fetchData("/order/create", {
       method: "POST",

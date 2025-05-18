@@ -37,7 +37,9 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request)->request
                         .requestMatchers("/api/account/register",
-                                "/api/account/login").permitAll()
+                                "/api/account/login",
+                                "api/account/getAccountByUserName",
+                                "/api/account/updatePassword/**").permitAll()
                         .requestMatchers("/api/account/profile/**",
                                 "/api/account/updateProfile/**").hasRole("User")
                         .requestMatchers("/api/**").hasRole("Admin")
@@ -76,7 +78,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174")); // đúng origin FE
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

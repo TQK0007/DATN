@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,5 +70,43 @@ public class ProductServiceImpl implements IProductService {
         List<ProductResponseDetailDTO> products = productPage.get().map(p->ProductMapper.MapProductToProductResponseDetailDTO(p)).collect(Collectors.toList());
         if(products.isEmpty()) return List.of();
         return products;
+    }
+
+    @Override
+    public Page<Product> getProductsByFilters(int page, String gender, String collection, Double minPrice, Double maxPrice, String search) {
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE);
+
+        return productRepository.findByFilters(
+                gender, collection, minPrice, maxPrice, search,
+                pageable
+        );
+    }
+
+    @Override
+    public Page<ProductResponseDTO> findFilteredProducts(String gender, String collection, Double minPrice, Double maxPrice, String search, int page, String sortType) {
+        Pageable pageable;
+
+        if ("bestSelling".equals(sortType)) {
+            // Sử dụng native query riêng
+            Page<Product> productPage = productRepository.findBestSellingProducts(
+                    gender, collection, minPrice, maxPrice, search,
+                    PageRequest.of(page-1, PAGE_SIZE)
+            );
+            return productPage.map(ProductMapper::MapProductToProductResponseDTO);
+        }
+
+        // Các sort còn lại
+        Sort sort = switch (sortType) {
+            case "newest" -> Sort.by(Sort.Direction.DESC, "createAt");
+            case "priceLowToHigh" -> Sort.by(Sort.Direction.ASC, "price");
+            case "priceHighToLow" -> Sort.by(Sort.Direction.DESC, "price");
+            default -> Sort.unsorted();
+        };
+
+        pageable = PageRequest.of(page-1, PAGE_SIZE, sort);
+        Page<Product> productPage = productRepository.findByFilters(
+                gender, collection, minPrice, maxPrice, search, pageable
+        );
+        return productPage.map(ProductMapper::MapProductToProductResponseDTO);
     }
 }

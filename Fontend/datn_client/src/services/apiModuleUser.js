@@ -11,7 +11,9 @@ async function fetchData(endpoint, options = {}) {
   // Danh sách các endpoint KHÔNG cần token
   const noAuthEndpoints = [
     "/account/login",
-    "/account/register"
+    "/account/register",
+    "/account/getAccountByUserName",
+    "/account/updatePassword"
   ];
 
   // Kiểm tra xem endpoint hiện tại có nằm trong danh sách miễn xác thực không
@@ -48,6 +50,7 @@ export const accountApi = {
     fetchData("/account/login", {
       method: "POST",
       body: JSON.stringify(data),
+      headers: {},
     }),
   register: (data) =>
     fetchData("/account/register", {
@@ -89,7 +92,29 @@ export const accountApi = {
       method: "POST",
       body: JSON.stringify(data),
     }),
-};
+  getProfile: (id) =>
+    fetchData(`/account/profile/${id}`, {
+      method: "GET",
+    }),
+  updateProfile: (id, data) =>
+    fetchData(`/account/updateProfile/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  getAccountByUserName: (userName) =>
+    fetchData(`/account/getAccountByUserName`, {
+      method: "POST",
+      body: JSON.stringify({ userName }),
+      headers: {},
+    }),
+  updatePassword: (accountId, password) =>
+    fetchData(`/account/updatePassword/${accountId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ password }),
+      headers: {},
+    }),
+}
+
 
 // Auth Service
 export const authService = {

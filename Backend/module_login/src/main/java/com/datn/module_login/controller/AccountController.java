@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -157,4 +159,13 @@ public class AccountController {
         return ResponseEntity.ok("Cap nhat thanh cong");
     }
 
+
+    @PostMapping("/getAccountByUserName")
+    public ResponseEntity<Map<String,Integer>> getAccountIdByUserName(@RequestBody Map<String,String> userName) {
+        int accountId = accountService.findAccountIdByUserName(userName.get("userName"));
+        if(accountId==0) return ResponseEntity.badRequest().body(new HashMap<>());
+        Map<String,Integer> map = new HashMap<>();
+        map.put("accountId", accountId);
+        return ResponseEntity.ok(map);
+    }
 }

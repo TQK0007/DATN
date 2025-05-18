@@ -8,4 +8,6 @@ public interface IAccountService extends IBaseService<Account>{
     Account register(Account account, User user);
     Iterable<AccountResponseDTO> findAllByPage(int page);
     int findUserIdByUserName(String userName);
+
+    int findAccountIdByUserName(String userName);
 }

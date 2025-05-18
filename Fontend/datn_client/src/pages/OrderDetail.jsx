@@ -83,8 +83,8 @@ const OrderDetail = () => {
         ...order,
         shippingAddress,
       })
-
       toast.success("Cập nhật địa chỉ giao hàng thành công")
+      navigate("/pending-orders")
     } catch (err) {
       console.error("Error updating order:", err)
       toast.error("Có lỗi xảy ra khi cập nhật đơn hàng. Vui lòng thử lại sau.")

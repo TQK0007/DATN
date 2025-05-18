@@ -290,7 +290,7 @@ const Profile = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        placeholder="Nhập mật khẩu mới nếu muốn thay đổi"
+                        placeholder="Nhập mật khẩu mới"
                       />
                       <button type="button" className="btn btn-outline-secondary" onClick={togglePasswordVisibility}>
                         <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />

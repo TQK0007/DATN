@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faFilter, faTimes, faSort } from "@fortawesome/free-solid-svg-icons"
+import { faFilter, faTimes, faSort, faSearch } from "@fortawesome/free-solid-svg-icons"
 import ProductCard from "../ui/ProductCard"
 import { productApi } from "../services/api"
 import "../App.css"
@@ -30,6 +30,9 @@ const ProductList = () => {
     sort: "newest",
   })
   const [showFilters, setShowFilters] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" })
+  const priceTimeoutRef = useRef(null)
 
   // Danh sách bộ sưu tập
   const collections = [
@@ -42,6 +45,7 @@ const ProductList = () => {
   // Danh sách sắp xếp
   const sortOptions = [
     { value: "newest", label: "Mới nhất" },
+    { value: "bestSelling", label: "Nổi bật" },
     { value: "price-asc", label: "Giá: Thấp đến cao" },
     { value: "price-desc", label: "Giá: Cao đến thấp" },
     { value: "name-asc", label: "Tên: A-Z" },
@@ -53,10 +57,17 @@ const ProductList = () => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true)
-        const data = await productApi.getProducts(currentPage, filters)
-        setProducts(data)
-        setTotalItems(data.length + 1) // Giả sử có 6 sản phẩm
-        setTotalPages(Math.ceil(data.length / itemsPerPage) + 1) // Giả sử có 2 trang
+
+        // Thêm sortType vào filters
+        const filtersWithSort = {
+          ...filters,
+          sortType: filters.sort,
+        }
+
+        const data = await productApi.getProducts(currentPage, filtersWithSort)
+        setProducts(data.products)
+        setTotalItems(data.totalItems)
+        setTotalPages(data.totalPages)
         setIsLoading(false)
       } catch (err) {
         console.error("Error fetching products:", err)
@@ -81,6 +92,28 @@ const ProductList = () => {
     navigate(`/products?${params.toString()}`)
   }, [filters, navigate])
 
+  // Xử lý tìm kiếm theo giá sau 5 giây
+  useEffect(() => {
+    if (priceTimeoutRef.current) {
+      clearTimeout(priceTimeoutRef.current)
+    }
+
+    priceTimeoutRef.current = setTimeout(() => {
+      setFilters((prev) => ({
+        ...prev,
+        minPrice: priceRange.min,
+        maxPrice: priceRange.max,
+      }))
+      setCurrentPage(1)
+    }, 5000) // 5 giây
+
+    return () => {
+      if (priceTimeoutRef.current) {
+        clearTimeout(priceTimeoutRef.current)
+      }
+    }
+  }, [priceRange])
+
   // Handle filter changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target
@@ -98,18 +131,17 @@ const ProductList = () => {
       search: "",
       sort: "newest",
     })
+    setPriceRange({ min: "", max: "" })
+    setSearchTerm("")
     setCurrentPage(1)
   }
 
   // Handle pagination
   const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return
     setCurrentPage(page)
     window.scrollTo(0, 0)
   }
-
-  // Calculate start and end item numbers
-  const startItem = (currentPage - 1) * itemsPerPage + 1
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems)
 
   return (
     <div className="product-list-page py-5">
@@ -134,6 +166,7 @@ const ProductList = () => {
                   <FontAwesomeIcon icon={faTimes} className="me-1" /> Xóa
                 </button>
               </div>
+
               {/* Gender Filter */}
               <div className="mb-4">
                 <h6 className="mb-3">Giới tính</h6>
@@ -208,9 +241,8 @@ const ProductList = () => {
                       type="number"
                       className="form-control"
                       placeholder="Từ"
-                      name="minPrice"
-                      value={filters.minPrice}
-                      onChange={handleFilterChange}
+                      value={priceRange.min}
+                      onChange={(e) => setPriceRange((prev) => ({ ...prev, min: e.target.value }))}
                       min="0"
                     />
                   </div>
@@ -219,9 +251,8 @@ const ProductList = () => {
                       type="number"
                       className="form-control"
                       placeholder="Đến"
-                      name="maxPrice"
-                      value={filters.maxPrice}
-                      onChange={handleFilterChange}
+                      value={priceRange.max}
+                      onChange={(e) => setPriceRange((prev) => ({ ...prev, max: e.target.value }))}
                       min="0"
                     />
                   </div>
@@ -231,14 +262,25 @@ const ProductList = () => {
               {/* Search Filter */}
               <div>
                 <h6 className="mb-3">Tìm kiếm</h6>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Tên sản phẩm..."
-                  name="search"
-                  value={filters.search}
-                  onChange={handleFilterChange}
-                />
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Tên sản phẩm..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <button
+                    className="btn btn-outline-primary"
+                    type="button"
+                    onClick={() => {
+                      setFilters((prev) => ({ ...prev, search: searchTerm }))
+                      setCurrentPage(1)
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -286,7 +328,8 @@ const ProductList = () => {
             {!isLoading && !error && products.length > 0 && (
               <div className="pagination-container">
                 <div className="pagination-info">
-                  Hiển thị {startItem} đến {endItem} của {totalItems} kết quả
+                  Hiển thị {(currentPage - 1) * itemsPerPage + 1} đến {Math.min(currentPage * itemsPerPage, totalItems)}{" "}
+                  của {totalItems} kết quả
                 </div>
                 <div className="pagination-controls">
                   <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>

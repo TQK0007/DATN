@@ -63,6 +63,8 @@ const Cart = () => {
     }
   }, [])
 
+  console.log(cartItems)
+
   // Handle quantity change
   const handleQuantityChange = async (cartItemId, newQuantity) => {
     if (newQuantity < 1) return
@@ -161,6 +163,7 @@ const Cart = () => {
         orderItems,
       }
 
+
       await orderApi.createOrder(orderData)
 
       // Remove purchased items from cart
@@ -175,11 +178,11 @@ const Cart = () => {
       // Trigger cart update event
       window.dispatchEvent(new Event("cartUpdated"))
 
-      toast.success("Đặt hàng thành công!")
+      toast.success("Mua hàng thành công!")
       navigate("/pending-orders")
     } catch (error) {
       console.error("Error creating order:", error)
-      toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.")
+      toast.error("Có lỗi xảy ra khi Mua hàng. Vui lòng thử lại sau.")
     } finally {
       setIsSubmitting(false)
     }
@@ -360,7 +363,7 @@ const Cart = () => {
                           Đang xử lý...
                         </>
                       ) : (
-                        "Đặt hàng"
+                        "Mua hàng"
                       )}
                     </button>
                   </form>

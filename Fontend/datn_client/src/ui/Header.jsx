@@ -11,7 +11,7 @@ import {
   faSearch,
   faUserEdit,
 } from "@fortawesome/free-solid-svg-icons"
-import { cartService } from "../services/api";
+import { cartApi } from "../services/api";
 import { authService } from "../services/apiModuleUser";
 import "../App.css";
 
@@ -22,21 +22,32 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
   useEffect(() => {
     // Cập nhật số lượng sản phẩm trong giỏ hàng
-    const updateCartCount = () => {
-      const cart = cartService.getCart()
-      setCartCount(cart.length)
-    }
+    const updateCartCount = async () => {
+      if (!isLoggedIn) {
+        setCartCount(0)
+        return
+      }
 
-    updateCartCount()
+      try {
+        const cartId = authService.getCartId()
+        if (!cartId) {
+          setCartCount(0)
+          return
+        }
 
-    // Lắng nghe sự thay đổi trong localStorage
-    const handleStorageChange = (e) => {
-      if (e.key === "cart") {
-        updateCartCount()
+        const cartData = await cartApi.getCartDetail(cartId)
+        if (cartData && cartData.cartItems) {
+          setCartCount(cartData.cartItems.length)
+        } else {
+          setCartCount(0)
+        }
+      } catch (error) {
+        console.error("Error fetching cart count:", error)
+        setCartCount(0)
       }
     }
 
-    window.addEventListener("storage", handleStorageChange)
+    updateCartCount()
 
     // Custom event để cập nhật số lượng trong giỏ hàng
     const handleCartUpdate = () => {
@@ -46,10 +57,9 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     window.addEventListener("cartUpdated", handleCartUpdate)
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange)
       window.removeEventListener("cartUpdated", handleCartUpdate)
     }
-  }, [])
+  }, [isLoggedIn])
 
   const handleLogout = () => {
     authService.logout()
@@ -69,7 +79,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            Shop Thời Trang
+            Hồng Thắm
           </Link>
 
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -88,7 +98,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
                   Sản phẩm
                 </Link>
               </li>
-              <li className="nav-item dropdown">
+              {/* <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
                   href="#"
@@ -118,7 +128,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li> */}
             </ul>
 
             <form className="search-form d-flex me-3" onSubmit={handleSearch}>

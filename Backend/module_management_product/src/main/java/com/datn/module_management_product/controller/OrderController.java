@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -133,5 +134,12 @@ public class OrderController {
         return ResponseEntity.ok(orderResponseDTOS);
     }
 
+    @GetMapping("/getTotalOrderAndPage")
+    public ResponseEntity<Map<String, Integer>> getTotalOrderAndPage() {
+        int count = orderService.findAll().size();
+        int page = orderService.getTotalPages();
+        Map<String, Integer> result = Map.of("count", count, "page", page);
+        return ResponseEntity.ok(result);
+    }
 
 }

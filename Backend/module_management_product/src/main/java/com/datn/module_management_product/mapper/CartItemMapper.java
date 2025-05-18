@@ -30,7 +30,8 @@ public class CartItemMapper {
                 cartItem.getSize(),
                 cartItem.getColor(),
                 cartItem.getPrice(),
-                cartItem.getProduct().getName()
+                cartItem.getProduct().getName(),
+                cartItem.getProduct().getId()
         );
         return cartItemResponseDTO;
     }

@@ -13,12 +13,14 @@ import com.datn.module_management_product.service.ICategoryService;
 import com.datn.module_management_product.service.IProductAttributeService;
 import com.datn.module_management_product.service.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -109,6 +111,55 @@ public class ProductController {
     @PostMapping(value = "/uploadImg")
     public ResponseEntity<String> uploadImg(@RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(productService.uploadImg(file));
+    }
+
+    @GetMapping("/getByFilters")
+    public ResponseEntity<Map<String, Object>> getByPageWithFilters(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String collection,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String search) {
+
+        Page<Product> productPage = productService.getProductsByFilters(
+                page, gender,collection,minPrice,maxPrice,search
+        );
+
+        List<ProductResponseDTO> dtos = productPage.getContent().stream()
+                .map(ProductMapper::MapProductToProductResponseDTO)
+                .toList();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", dtos);
+        response.put("totalItems", productPage.getTotalElements());
+        response.put("totalPages", productPage.getTotalPages());
+        response.put("currentPage", productPage.getNumber() + 1);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/getByFiltersAndSort")
+    public ResponseEntity<Map<String, Object>> getFilteredProducts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String collection,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "newest") String sortType
+    ) {
+        Page<ProductResponseDTO> result = productService.findFilteredProducts(
+                gender, collection, minPrice, maxPrice, search, page, sortType
+        );
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", result.getContent());
+        response.put("totalItems", result.getTotalElements());
+        response.put("totalPages", result.getTotalPages());
+        response.put("currentPage", result.getNumber());
+
+        return ResponseEntity.ok(response);
     }
 
 }

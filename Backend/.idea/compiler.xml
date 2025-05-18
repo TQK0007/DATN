@@ -26,7 +26,7 @@
       <module name="datn-bom" options="-parameters" />
       <module name="datn_bom" options="" />
       <module name="module_login" options="" />
-      <module name="module_management_product" options="" />
+      <module name="module_management_product" options="-parameters" />
       <module name="module_management_product (1)" options="-parameters" />
       <module name="module_management_product (2)" options="-parameters" />
     </option>

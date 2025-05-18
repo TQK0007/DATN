@@ -27,12 +27,12 @@ const Home = () => {
         setIsLoading(true);
 
         // Lấy sản phẩm nổi bật (sử dụng trang 1 với kích thước 8)
-        const featuredResponse = await productApi.getProducts(1);
-        setFeaturedProducts(featuredResponse);
+        const featuredResponse = await productApi.getProducts(1, { sortType: "bestSelling" })
+        setFeaturedProducts(featuredResponse.products);
 
         // Lấy sản phẩm mới nhất (sử dụng trang 1 với kích thước 8)
-        const newResponse = await productApi.getProducts(1);
-        setNewProducts(newResponse);
+        const newResponse = await productApi.getProducts(1, { sortType: "newest" })
+        setNewProducts(newResponse.products);
 
         setIsLoading(false);
       } catch (err) {

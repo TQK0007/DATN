@@ -15,6 +15,7 @@ import ProductList from "./pages/ProductList"
 import ProductDetail from "./pages/ProductDetail"
 import Cart from "./pages/Cart"
 import Orders from "./pages/Orders"
+import PendingOrders from "./pages/PendingOrders"
 import OrderDetail from "./pages/OrderDetail"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
@@ -85,6 +86,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Orders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pending-orders"
+              element={
+                <ProtectedRoute>
+                  <PendingOrders />
                 </ProtectedRoute>
               }
             />

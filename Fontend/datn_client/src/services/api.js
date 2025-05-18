@@ -12,6 +12,7 @@ async function fetchData(endpoint, options = {}) {
     "/product/detail",
     "/product/related",
     "/product/getProductByName",
+    "/product/getByFiltersAndSort",
     "/feedback/product",
   ];
 
@@ -52,21 +53,21 @@ async function fetchData(endpoint, options = {}) {
 
 // Product API
 export const productApi = {
-  getProducts: (page, filters = {}) => {
-    const queryParams = new URLSearchParams();
-    queryParams.append("page", page);
+    getProducts: (page, filters = {}) => {
+    const queryParams = new URLSearchParams()
+    queryParams.append("page", page)
 
     // Add filter parameters if they exist
-    if (filters.gender) queryParams.append("gender", filters.gender);
-    if (filters.collection)
-      queryParams.append("collection", filters.collection);
-    if (filters.minPrice) queryParams.append("minPrice", filters.minPrice);
-    if (filters.maxPrice) queryParams.append("maxPrice", filters.maxPrice);
-    if (filters.search) queryParams.append("search", filters.search);
+    if (filters.gender) queryParams.append("gender", filters.gender)
+    if (filters.collection) queryParams.append("collection", filters.collection)
+    if (filters.minPrice) queryParams.append("minPrice", filters.minPrice)
+    if (filters.maxPrice) queryParams.append("maxPrice", filters.maxPrice)
+    if (filters.search) queryParams.append("search", filters.search)
+    if (filters.sortType) queryParams.append("sortType", filters.sortType)
 
-    return fetchData(`/product/getByPage?${queryParams.toString()}`, {
+    return fetchData(`/product/getByFiltersAndSort?${queryParams.toString()}`, {
       method: "GET",
-    });
+    })
   },
   getProductDetail: (id) =>
     fetchData(`/product/detail/${id}`, {
@@ -85,7 +86,7 @@ export const commentApi = {
       method: "GET",
     }),
   createComment: (data) =>
-    fetchData(`/comment/create`, {
+    fetchData(`/feedback/create`, {
       method: "POST",
       body: JSON.stringify(data),
     }),
